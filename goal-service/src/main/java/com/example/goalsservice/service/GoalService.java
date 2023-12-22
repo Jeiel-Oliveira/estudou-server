@@ -1,6 +1,10 @@
 package com.example.goalsservice.service;
 
+import java.util.Optional;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.example.goalsservice.dto.GoalRequest;
 import com.example.goalsservice.model.Goal;
@@ -23,5 +27,14 @@ public class GoalService {
         goal.setTitle(goalRequest.getTitle());
 
         goalRepository.save(goal);
-    }    
+    }
+
+    public Goal findById(Long goalId) {        
+        Optional<Goal> goal = goalRepository.findById(goalId);        
+
+        return goal.orElseThrow(() -> new ResponseStatusException(
+            HttpStatus.NOT_FOUND,
+            "Objetivo não encontrado"            
+        ));        
+    }
 }

@@ -17,6 +17,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
 import com.brokengate.Project.Estudou.dto.ScheduleRequest;
+// import com.brokengate.Project.Estudou.dto.ScheduleVinculateGoalRequest;
+// import com.brokengate.Project.Estudou.model.Schedule;
 import com.brokengate.Project.Estudou.repository.ScheduleRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.assertions.Assertions;
@@ -78,6 +80,29 @@ class ProjectEstudouApplicationTests {
 			.content(scheduleRequestListString)
 		).andExpect(status().isOk());		
 	}
+
+	// @Test	
+	// void shouldVinculateGoal() throws Exception {
+	// 	Schedule schedule = new Schedule();
+	// 	ScheduleRequest scheduleRequest = getScheduleRequest();
+
+	// 	schedule.setStudentId(scheduleRequest.getStudentId());
+	// 	schedule.setStartDate(scheduleRequest.getStartDate());
+	// 	schedule.setEndDate(scheduleRequest.getEndDate());
+
+	// 	scheduleRepository.save(schedule);
+
+	// 	ScheduleVinculateGoalRequest scheduleVinculateGoalRequest = new ScheduleVinculateGoalRequest();
+	// 	scheduleVinculateGoalRequest.setGoalId("1");
+
+	// 	String scheduleVinculateGoalRequestString = objectMapper.writeValueAsString(scheduleVinculateGoalRequest);
+
+	// 	mockMvc.perform(
+	// 		MockMvcRequestBuilders.post("/api/schedule/{}/goals", "1")
+	// 		.contentType(MediaType.APPLICATION_JSON)
+	// 		.content(scheduleVinculateGoalRequestString)
+	// 	).andExpect(status().isOk());
+	// }
 
 	private ScheduleRequest getScheduleRequest() {
 		return ScheduleRequest.builder()

@@ -1,7 +1,6 @@
 package com.brokengate.categoryservice.service;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.brokengate.categoryservice.dto.CategoryRequest;
@@ -23,14 +22,11 @@ public class CategoryService {
         categoryRepository.save(category);
     }
 
-    public List<Category> findAll() {        
-        List<Category> categories = categoryRepository.findAll();
-        return categories;
+    public List<Category> findAll() {
+        return categoryRepository.findAll();
     }
 
-    public Category findByName(String name) {        
-        Category categoryResponse = categoryRepository.findByName(name);
-
-        return categoryResponse;
+    public Category findByName(String name) {
+        return categoryRepository.findByName(name);
     }
 }
