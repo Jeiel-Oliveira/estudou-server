@@ -1,6 +1,6 @@
 package com.example.goalsservice.controller;
 
-import javax.validation.Valid;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +16,7 @@ import com.example.goalsservice.dto.GoalRequest;
 import com.example.goalsservice.model.Goal;
 import com.example.goalsservice.service.GoalService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -28,16 +29,16 @@ public class GoalController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public String create(@RequestBody @Valid GoalRequest goalRequest) {
+    public String create(@Valid @RequestBody GoalRequest goalRequest) {
         goalService.create(goalRequest);
         return "Objetivo criado com sucesso";
     }
 
     @GetMapping("/{goalId}")
     @ResponseStatus(HttpStatus.OK)
-    public Goal findById(@PathVariable(value="goalId") String goalId) {
-        Goal goal = goalService.findById(Long.parseLong(goalId));
+    public Optional<Goal> findById(@PathVariable(value="goalId") String goalId) {
+        Optional<Goal> goal = goalService.findById(Long.parseLong(goalId));
         return goal;
     }
-    
+
 }
