@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.example.goalsservice.dto.GoalRequest;
+import com.example.goalsservice.exception.GoalNotFoundException;
 import com.example.goalsservice.model.Goal;
 import com.example.goalsservice.repository.GoalRepository;
 
@@ -15,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class GoalService {
-    
+
     private final GoalRepository goalRepository;
 
     public void create(GoalRequest goalRequest) {
@@ -29,12 +30,13 @@ public class GoalService {
         goalRepository.save(goal);
     }
 
-    public Goal findById(Long goalId) {        
-        Optional<Goal> goal = goalRepository.findById(goalId);        
+    public Optional<Goal> findById(Long goalId) {
+        Optional<Goal> goal = goalRepository.findById(goalId);
 
-        return goal.orElseThrow(() -> new ResponseStatusException(
-            HttpStatus.NOT_FOUND,
-            "Objetivo não encontrado"            
-        ));        
+        if (goal.isEmpty()) {
+            throw new GoalNotFoundException(Long.toString(goalId));
+        }
+
+        return goal;
     }
 }
