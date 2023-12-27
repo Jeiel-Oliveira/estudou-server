@@ -8,3 +8,9 @@ https://www.youtube.com/watch?v=gPnd-hzM_6A
 
 #### REPO dealing with exceptions
 https://github.com/Java-Techie-jt/validation-exception-handling/tree/main
+
+#### Testing WebClient
+https://www.youtube.com/watch?v=GBKY8QyfNDk
+
+#### Creating a Mongodb database
+https://www.mongodb.com/basics/create-database

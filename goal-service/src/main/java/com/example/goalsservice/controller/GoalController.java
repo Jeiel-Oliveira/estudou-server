@@ -37,8 +37,7 @@ public class GoalController {
     @GetMapping("/{goalId}")
     @ResponseStatus(HttpStatus.OK)
     public Optional<Goal> findById(@PathVariable(value="goalId") String goalId) {
-        Optional<Goal> goal = goalService.findById(Long.parseLong(goalId));
-        return goal;
+        return goalService.findById(Long.parseLong(goalId));
     }
 
 }

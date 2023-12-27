@@ -52,7 +52,7 @@ class GoalsServiceApplicationTests {
 	void shouldCreateGoal() throws Exception {
 		GoalRequest goalRequest = getGoalRequest();
 		String goalRequestString = objectMapper.writeValueAsString(goalRequest);
-		
+
 		mockMvc.perform(
 			MockMvcRequestBuilders.post("/api/goal")
 			.contentType(MediaType.APPLICATION_JSON)
@@ -69,7 +69,7 @@ class GoalsServiceApplicationTests {
 		goal.setColor("blue");
 		goal.setText("Concluir o curso");
 		goal.setTitle("Curso");
-		goal.setDayId("1");		
+		goal.setDayId("1");
 		goal.setId(1L);
 
 		goalRepository.save(goal);
@@ -81,7 +81,7 @@ class GoalsServiceApplicationTests {
 
 		MvcResult result = mockMvc.perform(
 			MockMvcRequestBuilders.get("/api/goal/1")
-				.contentType(MediaType.APPLICATION_JSON)					
+				.contentType(MediaType.APPLICATION_JSON)
 		).andReturn();
 
 		String content = result.getResponse().getContentAsString();
