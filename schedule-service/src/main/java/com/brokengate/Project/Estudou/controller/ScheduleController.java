@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-// import org.springframework.web.reactive.function.client.WebClient;
 
+import com.brokengate.Project.Estudou.dto.GoalRequest;
 import com.brokengate.Project.Estudou.dto.ScheduleRequest;
 import com.brokengate.Project.Estudou.dto.ScheduleResponse;
 import com.brokengate.Project.Estudou.dto.ScheduleVinculateGoalRequest;
@@ -24,16 +24,17 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/schedule")
 public class ScheduleController {
 
-  private final ScheduleService scheduleService;  
-  
+  private final ScheduleService scheduleService;
+
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public void createSchedule(@RequestBody ScheduleRequest scheduleRequest) {
+  public String createSchedule(@RequestBody ScheduleRequest scheduleRequest) {
 
     // Check if the goal exist before create a schedule
     scheduleService.create(scheduleRequest);
+    return "Schedule successfully created";
   }
-  
+
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
   public List<ScheduleResponse> getAll() {
@@ -43,8 +44,7 @@ public class ScheduleController {
   @PostMapping
   @ResponseStatus(HttpStatus.OK)
   @RequestMapping("/{scheduleId}/goals")
-  public String vinculateGaol(@PathVariable(value="scheduleId") String scheduleId, @RequestBody ScheduleVinculateGoalRequest scheduleVinculateGoalRequest) {    
-    scheduleService.vinculateGoal(scheduleId, scheduleVinculateGoalRequest);
-    return "Objetivo vinculado com sucesso";
+  public GoalRequest vinculateGaol(@PathVariable(value="scheduleId") String scheduleId, @RequestBody ScheduleVinculateGoalRequest scheduleVinculateGoalRequest) {
+    return scheduleService.vinculateGoal(scheduleId, scheduleVinculateGoalRequest);
   }
 }

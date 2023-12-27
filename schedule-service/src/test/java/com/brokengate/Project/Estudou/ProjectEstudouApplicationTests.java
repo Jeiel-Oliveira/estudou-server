@@ -4,7 +4,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
@@ -17,12 +20,13 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
 import com.brokengate.Project.Estudou.dto.ScheduleRequest;
-// import com.brokengate.Project.Estudou.dto.ScheduleVinculateGoalRequest;
-// import com.brokengate.Project.Estudou.model.Schedule;
+import com.brokengate.Project.Estudou.dto.ScheduleVinculateGoalRequest;
+import com.brokengate.Project.Estudou.model.Schedule;
 import com.brokengate.Project.Estudou.repository.ScheduleRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.assertions.Assertions;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
@@ -54,21 +58,21 @@ class ProjectEstudouApplicationTests {
 	void shouldCreateSchedule() throws Exception {
 		ScheduleRequest scheduleRequest = getScheduleRequest();
 		String scheduleRequestString = objectMapper.writeValueAsString(scheduleRequest);
-		
+
 		mockMvc.perform(
 			MockMvcRequestBuilders.post("/api/schedule")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(scheduleRequestString))
 			.andExpect(status().isCreated());
 
-		Assertions.assertTrue(scheduleRepository.findAll().size() == 1);		
+		Assertions.assertTrue(scheduleRepository.findAll().size() == 1);
 	}
 
 	@Test
-	void shouldGetSchedule() throws Exception {		
+	void shouldGetSchedule() throws Exception {
 		ScheduleRequest scheduleRequest = getScheduleRequest();
 		String scheduleRequestString = objectMapper.writeValueAsString(scheduleRequest);
-		
+
 		List<String> scheduleList = new ArrayList<String>();
 		scheduleList.add(scheduleRequestString);
 
@@ -78,31 +82,31 @@ class ProjectEstudouApplicationTests {
 			MockMvcRequestBuilders.get("/api/schedule")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(scheduleRequestListString)
-		).andExpect(status().isOk());		
+		).andExpect(status().isOk());
 	}
 
-	// @Test	
-	// void shouldVinculateGoal() throws Exception {
-	// 	Schedule schedule = new Schedule();
-	// 	ScheduleRequest scheduleRequest = getScheduleRequest();
+	@Test
+	void shouldVinculateGoal() throws Exception {
+		Schedule schedule = new Schedule();
+		ScheduleRequest scheduleRequest = getScheduleRequest();
 
-	// 	schedule.setStudentId(scheduleRequest.getStudentId());
-	// 	schedule.setStartDate(scheduleRequest.getStartDate());
-	// 	schedule.setEndDate(scheduleRequest.getEndDate());
+		schedule.setStudentId(scheduleRequest.getStudentId());
+		schedule.setStartDate(scheduleRequest.getStartDate());
+		schedule.setEndDate(scheduleRequest.getEndDate());
 
-	// 	scheduleRepository.save(schedule);
+		Schedule newSchedule = scheduleRepository.save(schedule);
 
-	// 	ScheduleVinculateGoalRequest scheduleVinculateGoalRequest = new ScheduleVinculateGoalRequest();
-	// 	scheduleVinculateGoalRequest.setGoalId("1");
+		ScheduleVinculateGoalRequest scheduleVinculateGoalRequest = new ScheduleVinculateGoalRequest();
+		scheduleVinculateGoalRequest.setGoalId("1");
 
-	// 	String scheduleVinculateGoalRequestString = objectMapper.writeValueAsString(scheduleVinculateGoalRequest);
+		String scheduleVinculateGoalRequestString = objectMapper.writeValueAsString(scheduleVinculateGoalRequest);
 
-	// 	mockMvc.perform(
-	// 		MockMvcRequestBuilders.post("/api/schedule/{}/goals", "1")
-	// 		.contentType(MediaType.APPLICATION_JSON)
-	// 		.content(scheduleVinculateGoalRequestString)
-	// 	).andExpect(status().isOk());
-	// }
+		mockMvc.perform(
+			MockMvcRequestBuilders.post(String.format("/api/schedule/%d/goals", newSchedule.getId()))
+			.contentType(MediaType.APPLICATION_JSON)
+			.content(scheduleVinculateGoalRequestString)
+		).andExpect(status().isOk());
+	}
 
 	private ScheduleRequest getScheduleRequest() {
 		return ScheduleRequest.builder()

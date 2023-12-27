@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(value = "schedule")
+@Document(value = "schedules")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -20,4 +20,5 @@ public class Schedule {
   private String studentId;
   private String startDate;
   private String endDate;
+  private String goalId;
 }

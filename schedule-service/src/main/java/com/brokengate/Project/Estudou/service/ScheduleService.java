@@ -1,15 +1,20 @@
 package com.brokengate.Project.Estudou.service;
 
 import java.util.List;
+import java.util.Optional;
+
+import javax.swing.text.html.Option;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.server.ResponseStatusException;
 
+import com.brokengate.Project.Estudou.dto.GoalRequest;
 import com.brokengate.Project.Estudou.dto.ScheduleRequest;
 import com.brokengate.Project.Estudou.dto.ScheduleResponse;
 import com.brokengate.Project.Estudou.dto.ScheduleVinculateGoalRequest;
+import com.brokengate.Project.Estudou.exception.GoalNotFoundException;
+import com.brokengate.Project.Estudou.exception.ScheduleNotFoundException;
 import com.brokengate.Project.Estudou.model.Schedule;
 import com.brokengate.Project.Estudou.repository.ScheduleRepository;
 
@@ -40,23 +45,26 @@ public class ScheduleService {
     return schedules.stream().map(this::mapToScheduleResponse).toList();
   }
 
-  public Boolean vinculateGoal(String scheduleId, ScheduleVinculateGoalRequest scheduleVinculateGoalRequest) {
+  public GoalRequest vinculateGoal(String scheduleId, ScheduleVinculateGoalRequest scheduleVinculateGoalRequest) {
     String goalEndpoint = "http://localhost:8082/api/goal/" + scheduleVinculateGoalRequest.getGoalId();
 
-    Boolean result = webClient.get()
+    GoalRequest goal = webClient.get()
       .uri(goalEndpoint)
       .retrieve()
-      .bodyToMono(Boolean.class)
+      .bodyToMono(GoalRequest.class)
       .block();
 
-    if (result == false) {
-      throw new ResponseStatusException(
-        HttpStatus.NOT_FOUND,
-        "Objetivo não encontrado"
-      );
+    if (goal == null) {
+      throw new GoalNotFoundException(scheduleVinculateGoalRequest.getGoalId());
     }
 
-    return result;
+    Optional<Schedule> scheduleOptional = scheduleRepository.findById(scheduleId);
+    Schedule schedule = scheduleOptional.orElseThrow(() -> new ScheduleNotFoundException(scheduleId));
+
+    schedule.setGoalId(scheduleVinculateGoalRequest.getGoalId());
+    scheduleRepository.save(schedule);
+
+    return goal;
   }
 
   private ScheduleResponse mapToScheduleResponse(Schedule schedule) {
@@ -65,5 +73,5 @@ public class ScheduleService {
       .startDate(schedule.getStartDate())
       .endDate(schedule.getEndDate())
       .build();
-  }  
+  }
 }
