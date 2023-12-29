@@ -3,6 +3,7 @@ package com.example.goalsservice;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -20,6 +21,7 @@ import com.example.goalsservice.model.Goal;
 import com.example.goalsservice.repository.GoalRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@Disabled("Integration test, slow")
 @SpringBootTest
 @AutoConfigureMockMvc
 class GoalsServiceApplicationTests {

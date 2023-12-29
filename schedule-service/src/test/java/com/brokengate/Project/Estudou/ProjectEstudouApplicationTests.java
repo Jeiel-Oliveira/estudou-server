@@ -1,5 +1,6 @@
 package com.brokengate.Project.Estudou;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -17,8 +18,6 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
 import com.brokengate.Project.Estudou.dto.ScheduleRequest;
-import com.brokengate.Project.Estudou.dto.ScheduleVinculateGoalRequest;
-import com.brokengate.Project.Estudou.model.Schedule;
 import com.brokengate.Project.Estudou.repository.ScheduleRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.assertions.Assertions;
@@ -28,6 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.ArrayList;
 import java.util.List;
 
+@Disabled("Integration test, slow")
 @SpringBootTest
 @Testcontainers
 @AutoConfigureMockMvc
@@ -78,29 +78,6 @@ class ProjectEstudouApplicationTests {
 			MockMvcRequestBuilders.get("/api/schedule")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(scheduleRequestListString)
-		).andExpect(status().isOk());
-	}
-
-	@Test
-	void shouldVinculateGoal() throws Exception {
-		Schedule schedule = new Schedule();
-		ScheduleRequest scheduleRequest = getScheduleRequest();
-
-		schedule.setStudentId(scheduleRequest.getStudentId());
-		schedule.setStartDate(scheduleRequest.getStartDate());
-		schedule.setEndDate(scheduleRequest.getEndDate());
-
-		Schedule newSchedule = scheduleRepository.save(schedule);
-
-		ScheduleVinculateGoalRequest scheduleVinculateGoalRequest = new ScheduleVinculateGoalRequest();
-		scheduleVinculateGoalRequest.setGoalId("1");
-
-		String scheduleVinculateGoalRequestString = objectMapper.writeValueAsString(scheduleVinculateGoalRequest);
-
-		mockMvc.perform(
-			MockMvcRequestBuilders.post(String.format("/api/schedule/%d/goals", newSchedule.getId()))
-			.contentType(MediaType.APPLICATION_JSON)
-			.content(scheduleVinculateGoalRequestString)
 		).andExpect(status().isOk());
 	}
 

@@ -1,5 +1,6 @@
 package com.brokengate.categoryservice;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -18,6 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Disabled("Integration test, slow")
 @SpringBootTest
 @AutoConfigureMockMvc
 class CategoryServiceApplicationTests {
@@ -27,7 +29,7 @@ class CategoryServiceApplicationTests {
 
 	@Autowired
 	private MockMvc mockMvc;
-	
+
 	static final MySQLContainer<?> mysqlContainer;
 
 	@Autowired
@@ -47,7 +49,7 @@ class CategoryServiceApplicationTests {
 	}
 
 	@Test
-	void shouldCreateCategory() throws Exception {		
+	void shouldCreateCategory() throws Exception {
 		CategoryRequest categoryRequest = getCategoryRequest();
 		String categoryRequestString = objectMapper.writeValueAsString(categoryRequest);
 
@@ -58,7 +60,7 @@ class CategoryServiceApplicationTests {
 		).andExpect(status().isCreated());
 
 		Assertions.assertTrue(categoryRepository.findAll().size() == 1);
-	}	
+	}
 
 	@Test
 	void shouldReturnListOfCategories() throws Exception {

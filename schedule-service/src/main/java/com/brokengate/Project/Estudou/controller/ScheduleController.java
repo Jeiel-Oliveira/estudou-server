@@ -15,6 +15,7 @@ import com.brokengate.Project.Estudou.dto.GoalRequest;
 import com.brokengate.Project.Estudou.dto.ScheduleRequest;
 import com.brokengate.Project.Estudou.dto.ScheduleResponse;
 import com.brokengate.Project.Estudou.dto.ScheduleVinculateGoalRequest;
+import com.brokengate.Project.Estudou.model.Schedule;
 import com.brokengate.Project.Estudou.service.ScheduleService;
 
 import lombok.RequiredArgsConstructor;
@@ -28,11 +29,15 @@ public class ScheduleController {
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public String createSchedule(@RequestBody ScheduleRequest scheduleRequest) {
-
+  public Schedule createSchedule(@RequestBody ScheduleRequest scheduleRequest) {
     // Check if the goal exist before create a schedule
-    scheduleService.create(scheduleRequest);
-    return "Schedule successfully created";
+    return scheduleService.create(scheduleRequest);
+  }
+
+  @GetMapping
+  @ResponseStatus(HttpStatus.OK)
+  public Schedule findById(@PathVariable(value="scheduleId") String scheduleId) {
+    return scheduleService.findById(scheduleId);
   }
 
   @GetMapping

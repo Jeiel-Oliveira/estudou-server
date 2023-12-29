@@ -1,7 +1,6 @@
 package com.brokengate.Project.Estudou.service;
 
 import java.util.List;
-import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -25,15 +24,24 @@ public class ScheduleService {
   private final ScheduleRepository scheduleRepository;
   private final WebClient webClient;
 
-  public void create(ScheduleRequest scheduleRequest) {
+  public Schedule create(ScheduleRequest scheduleRequest) {
     Schedule schedule = Schedule.builder()
       .studentId(scheduleRequest.getStudentId())
       .startDate(scheduleRequest.getStartDate())
       .endDate(scheduleRequest.getEndDate())
       .build();
 
-    scheduleRepository.save(schedule);
+    Schedule newSchedule = scheduleRepository.save(schedule);
     log.info("Schedule {} is saved", schedule.getId());
+
+    return newSchedule;
+  }
+
+  public Schedule findById(String scheduleId) {
+    Schedule schedule = scheduleRepository.findById(scheduleId)
+      .orElseThrow(() -> new ScheduleNotFoundException(scheduleId));
+
+    return schedule;
   }
 
   public List<ScheduleResponse> getAll() {
@@ -54,8 +62,8 @@ public class ScheduleService {
       throw new GoalNotFoundException(scheduleVinculateGoalRequest.getGoalId());
     }
 
-    Optional<Schedule> scheduleOptional = scheduleRepository.findById(scheduleId);
-    Schedule schedule = scheduleOptional.orElseThrow(() -> new ScheduleNotFoundException(scheduleId));
+    Schedule schedule = scheduleRepository.findById(scheduleId)
+      .orElseThrow(() -> new ScheduleNotFoundException(scheduleId));
 
     schedule.setGoalId(scheduleVinculateGoalRequest.getGoalId());
     scheduleRepository.save(schedule);

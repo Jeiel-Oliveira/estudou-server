@@ -9,7 +9,9 @@ https://www.youtube.com/watch?v=gPnd-hzM_6A
 #### REPO dealing with exceptions
 https://github.com/Java-Techie-jt/validation-exception-handling/tree/main
 
-#### Testing WebClient
+#### Testing Spring Series
+1) Unit test - https://www.youtube.com/watch?v=Ae5ukd136pc&list=PLRhHH6sj6xkxp5qxb5g3Rlfj_8lRNK2Qi
+
 https://www.youtube.com/watch?v=GBKY8QyfNDk
 
 #### Creating a Mongodb database
