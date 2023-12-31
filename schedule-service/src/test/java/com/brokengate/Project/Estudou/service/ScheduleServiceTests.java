@@ -3,7 +3,11 @@ package com.brokengate.Project.Estudou.service;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+
+import javax.swing.text.html.Option;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -12,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import com.brokengate.Project.Estudou.dto.ScheduleRequest;
+import com.brokengate.Project.Estudou.exception.ScheduleNotFoundException;
 import com.brokengate.Project.Estudou.model.Schedule;
 import com.brokengate.Project.Estudou.repository.ScheduleRepository;
 
@@ -37,6 +42,18 @@ public class ScheduleServiceTests {
     }
 
     @Test
+    void shouldFindAll() {
+        List<Schedule> schedules = Arrays.asList(generateSchedule(), generateSchedule());
+        when(scheduleRepository.findAll()).thenReturn(schedules);
+
+        List<Schedule> schedulesRes = scheduleRepository.findAll();
+
+        Assertions.assertEquals(schedules.size(), schedulesRes.size());
+        Assertions.assertTrue(schedulesRes.containsAll(schedules));
+        Assertions.assertInstanceOf(Schedule.class, schedulesRes.get(0));
+    }
+
+    @Test
     void shouldFindById() {
         String scheduleId = "1";
 
@@ -45,6 +62,16 @@ public class ScheduleServiceTests {
 
         Assertions.assertInstanceOf(Schedule.class, schedule);
         Assertions.assertEquals(schedule.getStudentId(), "1");
+    }
+
+    @Test
+    void shouldThrowExceptionWhenDontFind() {
+        String scheduleId = "1";
+        when(scheduleRepository.findById(scheduleId)).thenReturn(Optional.empty());
+
+        Assertions.assertThrows(ScheduleNotFoundException.class, () -> {
+            scheduleService.findById(scheduleId);
+        });
     }
 
     ScheduleRequest generateScheduleRequest() {

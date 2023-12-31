@@ -14,4 +14,5 @@ public class ScheduleResponse {
   private String studentId;
   private String startDate;
   private String endDate;
-} 
+  private String goalId;
+}

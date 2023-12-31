@@ -44,6 +44,10 @@ public class ScheduleService {
     return schedule;
   }
 
+  public void delete(String scheduleId) {
+    scheduleRepository.deleteById(scheduleId);
+  }
+
   public List<ScheduleResponse> getAll() {
     List<Schedule> schedules = scheduleRepository.findAll();
     return schedules.stream().map(this::mapToScheduleResponse).toList();
@@ -73,9 +77,11 @@ public class ScheduleService {
 
   private ScheduleResponse mapToScheduleResponse(Schedule schedule) {
     return ScheduleResponse.builder()
+      .id(schedule.getId())
       .studentId(schedule.getStudentId())
       .startDate(schedule.getStartDate())
       .endDate(schedule.getEndDate())
+      .goalId(schedule.getGoalId())
       .build();
   }
 }

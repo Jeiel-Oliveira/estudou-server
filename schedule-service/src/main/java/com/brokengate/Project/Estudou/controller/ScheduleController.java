@@ -3,6 +3,7 @@ package com.brokengate.Project.Estudou.controller;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,16 +35,23 @@ public class ScheduleController {
     return scheduleService.create(scheduleRequest);
   }
 
-  @GetMapping
+  @DeleteMapping("/{scheduleId}")
   @ResponseStatus(HttpStatus.OK)
-  public Schedule findById(@PathVariable(value="scheduleId") String scheduleId) {
-    return scheduleService.findById(scheduleId);
+  public String delete(@PathVariable(value="scheduleId") String scheduleId) {
+    scheduleService.delete(scheduleId);
+    return String.format("Schedule %s successfully deleted", scheduleId);
   }
 
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
   public List<ScheduleResponse> getAll() {
     return scheduleService.getAll();
+  }
+
+  @GetMapping("/{scheduleId}")
+  @ResponseStatus(HttpStatus.OK)
+  public Schedule findById(@PathVariable(value="scheduleId") String scheduleId) {
+    return scheduleService.findById(scheduleId);
   }
 
   @PostMapping
