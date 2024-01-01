@@ -44,8 +44,8 @@ public class ScheduleController {
 
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
-  public List<ScheduleResponse> getAll() {
-    return scheduleService.getAll();
+  public List<ScheduleResponse> findAll() {
+    return scheduleService.findAll();
   }
 
   @GetMapping("/{scheduleId}")

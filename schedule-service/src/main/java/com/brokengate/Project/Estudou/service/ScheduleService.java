@@ -48,7 +48,7 @@ public class ScheduleService {
     scheduleRepository.deleteById(scheduleId);
   }
 
-  public List<ScheduleResponse> getAll() {
+  public List<ScheduleResponse> findAll() {
     List<Schedule> schedules = scheduleRepository.findAll();
     return schedules.stream().map(this::mapToScheduleResponse).toList();
   }

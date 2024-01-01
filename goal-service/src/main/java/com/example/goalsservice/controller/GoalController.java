@@ -1,9 +1,11 @@
 package com.example.goalsservice.controller;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,15 +31,27 @@ public class GoalController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public String create(@Valid @RequestBody GoalRequest goalRequest) {
-        goalService.create(goalRequest);
-        return "Objetivo criado com sucesso";
+    public Goal create(@Valid @RequestBody GoalRequest goalRequest) {
+        return goalService.create(goalRequest);
     }
 
     @GetMapping("/{goalId}")
     @ResponseStatus(HttpStatus.OK)
     public Optional<Goal> findById(@PathVariable(value="goalId") String goalId) {
         return goalService.findById(Long.parseLong(goalId));
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<Goal> findAll() {
+        return goalService.findAll();
+    }
+
+    @DeleteMapping("/{goalId}")
+    @ResponseStatus(HttpStatus.OK)
+    public String delete(@PathVariable(value="goalId") String goalId) {
+        goalService.delete(goalId);
+        return String.format("Goal %s was deleted", goalId);
     }
 
 }

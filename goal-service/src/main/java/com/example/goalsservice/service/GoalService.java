@@ -1,5 +1,6 @@
 package com.example.goalsservice.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ public class GoalService {
 
     private final GoalRepository goalRepository;
 
-    public void create(GoalRequest goalRequest) {
+    public Goal create(GoalRequest goalRequest) {
         Goal goal = new Goal();
 
         goal.setColor(goalRequest.getColor());
@@ -25,7 +26,20 @@ public class GoalService {
         goal.setDayId(goalRequest.getDayId());
         goal.setTitle(goalRequest.getTitle());
 
-        goalRepository.save(goal);
+        Goal goalRes = goalRepository.save(goal);
+        return goalRes;
+    }
+
+    public List<Goal> findAll() {
+        List<Goal> goals = goalRepository.findAll();
+        return goals;
+    }
+
+    public void delete(String goalId) {
+        Long parsedGoalId = Long.parseLong(goalId);
+        findById(parsedGoalId);
+
+        goalRepository.deleteById(parsedGoalId);
     }
 
     public Optional<Goal> findById(Long goalId) {

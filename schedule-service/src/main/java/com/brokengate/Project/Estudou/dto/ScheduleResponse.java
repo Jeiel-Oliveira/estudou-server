@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ScheduleResponse {
   private String id;
+
   private String studentId;
   private String startDate;
   private String endDate;
