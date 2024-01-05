@@ -21,6 +21,7 @@ public class ApplicationExceptionHandler {
         return errorMap;
     }
 
+    // TODO - DUPLICATED handleBussinessException
     @ExceptionHandler(ScheduleNotFoundException.class)
     public Map<String, Object> handleBussinessException2(ScheduleNotFoundException exception) {
         Map<String, Object> errorMap = new HashMap<>();

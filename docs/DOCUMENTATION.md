@@ -11,6 +11,7 @@ https://github.com/Java-Techie-jt/validation-exception-handling/tree/main
 
 #### Testing Spring Series
 1) Unit test - https://www.youtube.com/watch?v=Ae5ukd136pc&list=PLRhHH6sj6xkxp5qxb5g3Rlfj_8lRNK2Qi
+2) Simple integration test - https://www.youtube.com/watch?v=NW8i2gna4qA&list=PLRhHH6sj6xkxp5qxb5g3Rlfj_8lRNK2Qi&index=2
 
 https://www.youtube.com/watch?v=GBKY8QyfNDk
 

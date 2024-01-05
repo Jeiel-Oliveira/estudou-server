@@ -1,6 +1,8 @@
 package com.brokengate.categoryservice.controller;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,12 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.brokengate.categoryservice.dto.CategoryRequest;
 import com.brokengate.categoryservice.model.Category;
 import com.brokengate.categoryservice.service.CategoryService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import lombok.RequiredArgsConstructor;
@@ -25,28 +23,31 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/category")
 public class CategoryController {
 
-    @Autowired
-	private ObjectMapper objectMapper;
-
-    private final CategoryService categoryService;    
+    private final CategoryService categoryService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public String createCategory(@RequestBody CategoryRequest categoryRequest) {
-        categoryService.create(categoryRequest);
-        return "Category successfully created";
+    public Category create(@RequestBody CategoryRequest categoryRequest) {
+        return categoryService.create(categoryRequest);
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public String getAllCategory() {
-        try {
-            List<Category> categories = categoryService.findAll();
-            String categoriesAsString = objectMapper.writeValueAsString(categories);
+    public List<Category> findAll() {
+        List<Category> categories = categoryService.findAll();
+        return categories;
+    }
 
-            return categoriesAsString;
-        } catch (JsonProcessingException error) {
-            return "Error";
-        }
+    @GetMapping("/{categoryId}")
+    @ResponseStatus(HttpStatus.OK)
+    public Category findById(@PathVariable(value="categoryId") String categoryId) {
+        return categoryService.findById(categoryId);
+    }
+
+    @DeleteMapping("/{categoryId}")
+    @ResponseStatus(HttpStatus.OK)
+    public String delete(@PathVariable(value="categoryId") String categoryId) {
+        categoryService.delete(categoryId);
+        return String.format("Category %s successfully deleted", categoryId);
     }
 }
