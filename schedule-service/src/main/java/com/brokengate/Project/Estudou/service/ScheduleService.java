@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ScheduleService {
 
   private final ScheduleRepository scheduleRepository;
-  private final WebClient webClient;
+  private final WebClient.Builder webClientBuilder;
 
   public Schedule create(ScheduleRequest scheduleRequest) {
     Schedule schedule = Schedule.builder()
@@ -54,9 +54,9 @@ public class ScheduleService {
   }
 
   public GoalRequest vinculateGoal(String scheduleId, ScheduleVinculateGoalRequest scheduleVinculateGoalRequest) {
-    String goalEndpoint = "http://localhost:8082/api/goal/" + scheduleVinculateGoalRequest.getGoalId();
+    String goalEndpoint = "http://goal-service/api/goal/" + scheduleVinculateGoalRequest.getGoalId();
 
-    GoalRequest goal = webClient.get()
+    GoalRequest goal = webClientBuilder.build().get()
       .uri(goalEndpoint)
       .retrieve()
       .bodyToMono(GoalRequest.class)
