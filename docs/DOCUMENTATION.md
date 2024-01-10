@@ -17,3 +17,19 @@ https://www.youtube.com/watch?v=GBKY8QyfNDk
 
 #### Creating a Mongodb database
 https://www.mongodb.com/basics/create-database
+
+#### Spring Cloud gateway
+Intro: https://spring.io/projects/spring-cloud-gateway/
+Complete documentation: https://docs.spring.io/spring-cloud-gateway/reference/spring-cloud-gateway.html
+
+#### Keyclock
+https://www.keycloak.org/documentation
+
+Docker install:
+https://www.keycloak.org/getting-started/getting-started-docker
+
+Command:
+sudo docker run -p 8181:8080 -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin quay.io/keycloak/keycloak:23.0.4 start-dev
+
+Configuration:
+http://localhost:8181/realms/estudou-realm
