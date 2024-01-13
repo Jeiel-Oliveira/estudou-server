@@ -32,4 +32,9 @@ Command:
 sudo docker run -p 8181:8080 -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin quay.io/keycloak/keycloak:23.0.4 start-dev
 
 Configuration:
-http://localhost:8181/realms/estudou-realm
+issuer: http://localhost:8181/realms/estudou-realm
+
+#### Docker
+
+Permissions related problems when execute docker-compose and how to fix:
+https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user
