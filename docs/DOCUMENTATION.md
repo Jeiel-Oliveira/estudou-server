@@ -38,3 +38,13 @@ issuer: http://localhost:8181/realms/estudou-realm
 
 Permissions related problems when execute docker-compose and how to fix:
 https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user
+
+#### Circuit breaker library in Java
+
+Aparentally is used to garanthe the calls from Promises or another services, in a micro-service architecture
+
+Java: https://resilience4j.readme.io/docs/getting-started
+Node: https://github.com/nodeshift/opossum
+
+Docs: https://resilience4j.readme.io/docs/getting-started
+Tutorial with tests: https://www.baeldung.com/spring-boot-resilience4j

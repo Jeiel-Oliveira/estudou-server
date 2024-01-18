@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.brokengate.Project.Estudou.exception.GoalNotFoundException;
+import com.brokengate.Project.Estudou.exception.GoalServiceUnavailableException;
 import com.brokengate.Project.Estudou.exception.ScheduleNotFoundException;
 
 @RestControllerAdvice
@@ -32,4 +33,14 @@ public class ApplicationExceptionHandler {
         return errorMap;
     }
 
+    // TODO - DUPLICATED handleBussinessException
+    @ExceptionHandler(GoalServiceUnavailableException.class)
+    public Map<String, Object> handleBussinessException3(GoalServiceUnavailableException exception) {
+        Map<String, Object> errorMap = new HashMap<>();
+
+        errorMap.put("status", exception.getStatusCode());
+        errorMap.put("message", exception.getReason());
+
+        return errorMap;
+    }
 }

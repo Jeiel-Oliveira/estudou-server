@@ -16,9 +16,13 @@ import com.brokengate.Project.Estudou.dto.GoalRequest;
 import com.brokengate.Project.Estudou.dto.ScheduleRequest;
 import com.brokengate.Project.Estudou.dto.ScheduleResponse;
 import com.brokengate.Project.Estudou.dto.ScheduleVinculateGoalRequest;
+import com.brokengate.Project.Estudou.exception.GoalNotFoundException;
+import com.brokengate.Project.Estudou.exception.GoalServiceUnavailableException;
 import com.brokengate.Project.Estudou.model.Schedule;
 import com.brokengate.Project.Estudou.service.ScheduleService;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -57,7 +61,15 @@ public class ScheduleController {
   @PostMapping
   @ResponseStatus(HttpStatus.OK)
   @RequestMapping("/{scheduleId}/goals")
+  @CircuitBreaker(name = "goal", fallbackMethod = "fallbackGoal")
   public GoalRequest vinculateGaol(@PathVariable(value="scheduleId") String scheduleId, @RequestBody ScheduleVinculateGoalRequest scheduleVinculateGoalRequest) {
     return scheduleService.vinculateGoal(scheduleId, scheduleVinculateGoalRequest);
+  }
+
+  public GoalRequest fallbackGoal (
+    String scheduleId,
+    ScheduleVinculateGoalRequest scheduleVinculateGoalRequest,
+    RuntimeException runtimeException) throws GoalServiceUnavailableException {
+    throw new GoalServiceUnavailableException();
   }
 }
