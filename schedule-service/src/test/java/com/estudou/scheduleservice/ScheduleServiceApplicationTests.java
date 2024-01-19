@@ -1,4 +1,4 @@
-package com.brokengate.Project.Estudou;
+package com.estudou.scheduleservice;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -31,7 +31,7 @@ import java.util.List;
 @SpringBootTest
 @Testcontainers
 @AutoConfigureMockMvc
-class ProjectEstudouApplicationTests {
+class ScheduleServiceApplicationTests {
 
 	@Container
 	static MongoDBContainer mongoDBContainer = new MongoDBContainer(DockerImageName.parse("mongo:4.4.2"));

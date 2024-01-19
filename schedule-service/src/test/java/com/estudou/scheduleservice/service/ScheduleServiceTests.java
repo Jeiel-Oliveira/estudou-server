@@ -1,4 +1,4 @@
-package com.brokengate.Project.Estudou.service;
+package com.estudou.scheduleservice.service;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -14,11 +14,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.brokengate.Project.Estudou.dto.ScheduleRequest;
-import com.brokengate.Project.Estudou.dto.ScheduleResponse;
-import com.brokengate.Project.Estudou.exception.ScheduleNotFoundException;
-import com.brokengate.Project.Estudou.model.Schedule;
-import com.brokengate.Project.Estudou.repository.ScheduleRepository;
+import com.estudou.scheduleservice.dto.ScheduleRequest;
+import com.estudou.scheduleservice.dto.ScheduleResponse;
+import com.estudou.scheduleservice.exception.ScheduleNotFoundException;
+import com.estudou.scheduleservice.model.Schedule;
+import com.estudou.scheduleservice.repository.ScheduleRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class ScheduleServiceTests {

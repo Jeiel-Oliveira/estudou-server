@@ -1,4 +1,4 @@
-package com.brokengate.Project.Estudou.dto;
+package com.estudou.scheduleservice.dto;
 
 import lombok.Data;
 

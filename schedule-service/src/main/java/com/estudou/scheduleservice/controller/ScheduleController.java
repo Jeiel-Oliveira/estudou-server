@@ -1,4 +1,4 @@
-package com.brokengate.Project.Estudou.controller;
+package com.estudou.scheduleservice.controller;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.brokengate.Project.Estudou.dto.GoalRequest;
-import com.brokengate.Project.Estudou.dto.ScheduleRequest;
-import com.brokengate.Project.Estudou.dto.ScheduleResponse;
-import com.brokengate.Project.Estudou.dto.ScheduleVinculateGoalRequest;
-import com.brokengate.Project.Estudou.exception.GoalServiceUnavailableException;
-import com.brokengate.Project.Estudou.model.Schedule;
-import com.brokengate.Project.Estudou.service.ScheduleService;
+import com.estudou.scheduleservice.dto.GoalRequest;
+import com.estudou.scheduleservice.dto.ScheduleRequest;
+import com.estudou.scheduleservice.dto.ScheduleResponse;
+import com.estudou.scheduleservice.dto.ScheduleVinculateGoalRequest;
+import com.estudou.scheduleservice.exception.GoalServiceUnavailableException;
+import com.estudou.scheduleservice.model.Schedule;
+import com.estudou.scheduleservice.service.ScheduleService;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;

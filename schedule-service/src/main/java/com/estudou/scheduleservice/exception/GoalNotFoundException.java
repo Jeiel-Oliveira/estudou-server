@@ -1,4 +1,4 @@
-package com.brokengate.Project.Estudou.exception;
+package com.estudou.scheduleservice.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;

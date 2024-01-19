@@ -1,4 +1,5 @@
-package com.brokengate.Project.Estudou.dto;
+
+package com.estudou.scheduleservice.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,14 +7,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
-public class ScheduleResponse {
-  private String id;
-
+@AllArgsConstructor
+@NoArgsConstructor
+public class ScheduleRequest {
   private String studentId;
   private String startDate;
   private String endDate;
-  private String goalId;
 }

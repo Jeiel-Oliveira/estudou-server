@@ -1,4 +1,4 @@
-package com.brokengate.Project.Estudou.config;
+package com.estudou.scheduleservice.config;
 
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;

@@ -1,4 +1,4 @@
-package com.brokengate.Project.Estudou.model;
+package com.estudou.scheduleservice.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

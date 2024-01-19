@@ -1,17 +1,17 @@
-package com.brokengate.Project.Estudou.service;
+package com.estudou.scheduleservice.service;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.brokengate.Project.Estudou.dto.GoalRequest;
-import com.brokengate.Project.Estudou.dto.ScheduleRequest;
-import com.brokengate.Project.Estudou.dto.ScheduleResponse;
-import com.brokengate.Project.Estudou.dto.ScheduleVinculateGoalRequest;
-import com.brokengate.Project.Estudou.exception.GoalNotFoundException;
-import com.brokengate.Project.Estudou.exception.ScheduleNotFoundException;
-import com.brokengate.Project.Estudou.model.Schedule;
-import com.brokengate.Project.Estudou.repository.ScheduleRepository;
+import com.estudou.scheduleservice.dto.GoalRequest;
+import com.estudou.scheduleservice.dto.ScheduleRequest;
+import com.estudou.scheduleservice.dto.ScheduleResponse;
+import com.estudou.scheduleservice.dto.ScheduleVinculateGoalRequest;
+import com.estudou.scheduleservice.exception.GoalNotFoundException;
+import com.estudou.scheduleservice.exception.ScheduleNotFoundException;
+import com.estudou.scheduleservice.model.Schedule;
+import com.estudou.scheduleservice.repository.ScheduleRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
