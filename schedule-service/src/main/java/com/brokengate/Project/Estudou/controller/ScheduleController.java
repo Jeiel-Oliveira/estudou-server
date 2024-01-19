@@ -1,6 +1,7 @@
 package com.brokengate.Project.Estudou.controller;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,12 +17,12 @@ import com.brokengate.Project.Estudou.dto.GoalRequest;
 import com.brokengate.Project.Estudou.dto.ScheduleRequest;
 import com.brokengate.Project.Estudou.dto.ScheduleResponse;
 import com.brokengate.Project.Estudou.dto.ScheduleVinculateGoalRequest;
-import com.brokengate.Project.Estudou.exception.GoalNotFoundException;
 import com.brokengate.Project.Estudou.exception.GoalServiceUnavailableException;
 import com.brokengate.Project.Estudou.model.Schedule;
 import com.brokengate.Project.Estudou.service.ScheduleService;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import lombok.RequiredArgsConstructor;
 
@@ -61,12 +62,14 @@ public class ScheduleController {
   @PostMapping
   @ResponseStatus(HttpStatus.OK)
   @RequestMapping("/{scheduleId}/goals")
-  @CircuitBreaker(name = "goal", fallbackMethod = "fallbackGoal")
-  public GoalRequest vinculateGaol(@PathVariable(value="scheduleId") String scheduleId, @RequestBody ScheduleVinculateGoalRequest scheduleVinculateGoalRequest) {
-    return scheduleService.vinculateGoal(scheduleId, scheduleVinculateGoalRequest);
+  @CircuitBreaker(name="goal", fallbackMethod="fallbackGoal")
+  @TimeLimiter(name="goal")
+  @Retry(name="goal")
+  public CompletableFuture<GoalRequest> vinculateGaol(@PathVariable(value="scheduleId") String scheduleId, @RequestBody ScheduleVinculateGoalRequest scheduleVinculateGoalRequest) {
+    return CompletableFuture.supplyAsync(() -> scheduleService.vinculateGoal(scheduleId, scheduleVinculateGoalRequest)) ;
   }
 
-  public GoalRequest fallbackGoal (
+  public CompletableFuture<GoalRequest> fallbackGoal (
     String scheduleId,
     ScheduleVinculateGoalRequest scheduleVinculateGoalRequest,
     RuntimeException runtimeException) throws GoalServiceUnavailableException {
