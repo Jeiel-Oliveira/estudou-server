@@ -13,3 +13,7 @@ services:
       volumes:
         - .local/keycloak/:/opt/jboss/keycloak/standalone/data/
       command: ["start-dev"]
+  zipkin:
+    image: openzipkin/zipkin
+    ports:
+      - "9411:9411"

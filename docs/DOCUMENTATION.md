@@ -48,3 +48,21 @@ Node: https://github.com/nodeshift/opossum
 
 Docs: https://resilience4j.readme.io/docs/getting-started
 Tutorial with tests: https://www.baeldung.com/spring-boot-resilience4j
+
+#### Library for Distributed tracing
+
+Java Distributed Tracing Framework
+https://spring.io/projects/spring-cloud-sleuth/
+
+Application to visualize distributed tracing:
+https://zipkin.io/
+
+docker run -d -p 9411:9411 openzipkin/zipkin
+
+Micrometer documentation:
+https://docs.micrometer.io/micrometer/reference/
+
+Actual reading: https://docs.micrometer.io/micrometer/reference/concepts/naming.html
+
+Documentation to join zipkin and micrometer:
+https://www.appsdeveloperblog.com/micrometer-and-zipkin-in-spring-boot/
