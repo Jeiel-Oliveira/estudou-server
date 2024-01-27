@@ -21,6 +21,7 @@
         <module>goal-service</module>
         <module>discovery-server</module>
         <module>api-gateway</module>
+        <module>mission-service</module>
     </modules>
 
     <properties>

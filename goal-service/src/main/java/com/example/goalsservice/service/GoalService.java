@@ -1,8 +1,6 @@
 package com.example.goalsservice.service;
 
 import java.util.List;
-import java.util.Optional;
-
 import org.springframework.stereotype.Service;
 
 import com.example.goalsservice.dto.GoalRequest;
@@ -26,8 +24,7 @@ public class GoalService {
         goal.setDayId(goalRequest.getDayId());
         goal.setTitle(goalRequest.getTitle());
 
-        Goal goalRes = goalRepository.save(goal);
-        return goalRes;
+        return goalRepository.save(goal);
     }
 
     public List<Goal> findAll() {
@@ -42,12 +39,9 @@ public class GoalService {
         goalRepository.deleteById(parsedGoalId);
     }
 
-    public Optional<Goal> findById(Long goalId) {
-        Optional<Goal> goal = goalRepository.findById(goalId);
-
-        if (goal.isEmpty()) {
-            throw new GoalNotFoundException(Long.toString(goalId));
-        }
+    public Goal findById(Long goalId) {
+        Goal goal = goalRepository.findById(goalId)
+            .orElseThrow(() -> new GoalNotFoundException(Long.toString(goalId)));
 
         return goal;
     }

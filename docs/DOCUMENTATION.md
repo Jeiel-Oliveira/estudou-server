@@ -66,3 +66,15 @@ Actual reading: https://docs.micrometer.io/micrometer/reference/concepts/naming.
 
 Documentation to join zipkin and micrometer:
 https://www.appsdeveloperblog.com/micrometer-and-zipkin-in-spring-boot/
+
+#### Spring and Apache Kafka
+
+kafka and docker setup: https://www.baeldung.com/ops/kafka-docker-setup
+spring and kafka: https://spring.io/projects/spring-kafka/
+
+Kafka story:
+https://techbeacon.com/app-dev-testing/what-apache-kafka-why-it-so-popular-should-you-use-it#:~:text=Kafka's%20origin%20story%20at%20LinkedIn&text=The%20problem%20they%20originally%20set,%22real%2Dtime%22%20processing.
+
+### Configure MYSQL with test containers
+
+https://medium.com/@anil.java.story/springboot-test-containers-mysql-e0350645d608

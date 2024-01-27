@@ -1,7 +1,6 @@
 package com.example.goalsservice.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,7 +36,7 @@ public class GoalController {
 
     @GetMapping("/{goalId}")
     @ResponseStatus(HttpStatus.OK)
-    public Optional<Goal> findById(@PathVariable(value="goalId") String goalId) {
+    public Goal findById(@PathVariable(value="goalId") String goalId) {
         return goalService.findById(Long.parseLong(goalId));
     }
 

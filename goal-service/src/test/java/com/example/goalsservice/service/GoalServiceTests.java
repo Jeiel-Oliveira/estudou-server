@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -53,6 +53,17 @@ public class GoalServiceTests {
     }
 
     @Test
+    void shouldFindById() {
+        Long goalId = 1L;
+
+        when(goalRepository.findById(goalId)).thenReturn(generateOptionsGoal());
+        Goal goal = goalService.findById(goalId);
+
+        Assertions.assertInstanceOf(Goal.class, goal);
+        Assertions.assertEquals(goal.getId(), 1);
+    }
+
+    @Test
     void shouldThrowWhenDeletingNoValue() {
         String goalId = "1";
         Long parsedGoalId = 1L;
@@ -83,5 +94,9 @@ public class GoalServiceTests {
         goal.setId(1L);
 
         return goal;
+    }
+
+    private Optional<Goal> generateOptionsGoal() {
+        return Optional.ofNullable(generateGoal());
     }
 }
