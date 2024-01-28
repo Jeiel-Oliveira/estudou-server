@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GoalRequest {
-    @NotNull(message = "dayId not sent")
+    @NotNull(message = "dayId is required")
     private String dayId;
 
     @NotBlank

@@ -13,6 +13,8 @@ import com.estudou.categoryservice.dto.CategoryRequest;
 import com.estudou.categoryservice.model.Category;
 import com.estudou.categoryservice.service.CategoryService;
 
+import jakarta.validation.Valid;
+
 import java.util.List;
 import org.springframework.http.HttpStatus;
 
@@ -27,7 +29,7 @@ public class CategoryController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Category create(@RequestBody CategoryRequest categoryRequest) {
+    public Category create(@Valid @RequestBody CategoryRequest categoryRequest) {
         return categoryService.create(categoryRequest);
     }
 
