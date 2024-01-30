@@ -1,5 +1,6 @@
 package com.estudou.missionservice.controller;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/goal")
+@RequestMapping("/api/mission")
 public class MissionController {
 
     @Autowired
@@ -26,6 +27,12 @@ public class MissionController {
     @ResponseStatus(HttpStatus.OK)
     public Mission findById(@PathVariable(value="missionId") String missionId) {
         return missionService.findById(Long.parseLong(missionId));
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<Mission> findAll() {
+        return missionService.findAll();
     }
 
 }

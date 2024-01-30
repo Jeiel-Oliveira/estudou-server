@@ -98,6 +98,5 @@ class CategoryControllerTests {
         categoryRequest.setName("Estudo");
 
         return categoryRequest;
-
     }
 }
