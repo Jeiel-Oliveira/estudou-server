@@ -15,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.estudou.scheduleservice.dto.ScheduleRequest;
-import com.estudou.scheduleservice.dto.ScheduleResponse;
 import com.estudou.scheduleservice.exception.ScheduleNotFoundException;
 import com.estudou.scheduleservice.model.Schedule;
 import com.estudou.scheduleservice.repository.ScheduleRepository;
@@ -46,10 +45,10 @@ public class ScheduleServiceTests {
         List<Schedule> schedules = Arrays.asList(generateSchedule(), generateSchedule());
         when(scheduleRepository.findAll()).thenReturn(schedules);
 
-        List<ScheduleResponse> schedulesRes = scheduleService.findAll();
+        List<Schedule> schedulesRes = scheduleService.findAll();
 
         Assertions.assertEquals(schedules.size(), schedulesRes.size());
-        Assertions.assertInstanceOf(ScheduleResponse.class, schedulesRes.get(0));
+        Assertions.assertInstanceOf(Schedule.class, schedulesRes.get(0));
     }
 
     @Test

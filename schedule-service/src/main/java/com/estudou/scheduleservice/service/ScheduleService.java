@@ -6,7 +6,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import com.estudou.scheduleservice.dto.GoalRequest;
 import com.estudou.scheduleservice.dto.ScheduleRequest;
-import com.estudou.scheduleservice.dto.ScheduleResponse;
 import com.estudou.scheduleservice.dto.ScheduleVinculateGoalRequest;
 import com.estudou.scheduleservice.exception.GoalNotFoundException;
 import com.estudou.scheduleservice.exception.ScheduleNotFoundException;
@@ -44,11 +43,12 @@ public class ScheduleService {
     return schedule;
   }
 
-  public void delete(String scheduleId) {
+  public boolean delete(String scheduleId) {
     scheduleRepository.deleteById(scheduleId);
+    return true;
   }
 
-  public List<ScheduleResponse> findAll() {
+  public List<Schedule> findAll() {
     List<Schedule> schedules = scheduleRepository.findAll();
     return schedules.stream().map(this::mapToScheduleResponse).toList();
   }
@@ -75,8 +75,8 @@ public class ScheduleService {
     return goal;
   }
 
-  private ScheduleResponse mapToScheduleResponse(Schedule schedule) {
-    return ScheduleResponse.builder()
+  private Schedule mapToScheduleResponse(Schedule schedule) {
+    return Schedule.builder()
       .id(schedule.getId())
       .studentId(schedule.getStudentId())
       .startDate(schedule.getStartDate())

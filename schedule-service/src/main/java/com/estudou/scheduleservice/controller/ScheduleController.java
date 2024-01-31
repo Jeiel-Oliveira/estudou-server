@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.estudou.scheduleservice.dto.GoalRequest;
 import com.estudou.scheduleservice.dto.ScheduleRequest;
-import com.estudou.scheduleservice.dto.ScheduleResponse;
 import com.estudou.scheduleservice.dto.ScheduleVinculateGoalRequest;
 import com.estudou.scheduleservice.exception.GoalServiceUnavailableException;
 import com.estudou.scheduleservice.model.Schedule;
@@ -24,6 +23,7 @@ import com.estudou.scheduleservice.service.ScheduleService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -35,7 +35,7 @@ public class ScheduleController {
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public Schedule createSchedule(@RequestBody ScheduleRequest scheduleRequest) {
+  public Schedule create(@Valid @RequestBody ScheduleRequest scheduleRequest) {
     // Check if the goal exist before create a schedule
     return scheduleService.create(scheduleRequest);
   }
@@ -49,7 +49,7 @@ public class ScheduleController {
 
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
-  public List<ScheduleResponse> findAll() {
+  public List<Schedule> findAll() {
     return scheduleService.findAll();
   }
 
