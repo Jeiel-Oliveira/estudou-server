@@ -32,11 +32,12 @@ public class GoalService {
         return goals;
     }
 
-    public void delete(String goalId) {
+    public boolean delete(String goalId) {
         Long parsedGoalId = Long.parseLong(goalId);
         findById(parsedGoalId);
 
         goalRepository.deleteById(parsedGoalId);
+        return true;
     }
 
     public Goal findById(Long goalId) {

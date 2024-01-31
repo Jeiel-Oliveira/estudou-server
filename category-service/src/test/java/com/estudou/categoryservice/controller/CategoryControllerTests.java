@@ -77,6 +77,7 @@ class CategoryControllerTests {
     @Test
     void shouldProperlyDelete() throws Exception {
         when(categoryService.delete(any())).thenReturn(true);
+
         mockMvc.perform(delete("/api/category/{categoryId}", 1L))
             .andExpect(status().isOk());
     }
