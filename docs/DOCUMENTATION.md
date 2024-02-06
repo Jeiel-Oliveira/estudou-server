@@ -6,6 +6,14 @@ https://stackoverflow.blog/2020/03/02/best-practices-for-rest-api-design/
 ### Validation in spring boot guide
 https://www.youtube.com/watch?v=gPnd-hzM_6A
 
+#### Spring Cloud gateway
+Intro: https://spring.io/projects/spring-cloud-gateway/
+Complete documentation: https://docs.spring.io/spring-cloud-gateway/reference/spring-cloud-gateway.html
+
+#### Spring Jobs
+Need to check in the future to know if is something i need to use
+https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/autoconfigure/batch/JobLauncherApplicationRunner.html
+
 #### REPO dealing with exceptions
 https://github.com/Java-Techie-jt/validation-exception-handling/tree/main
 
@@ -17,22 +25,6 @@ https://www.youtube.com/watch?v=GBKY8QyfNDk
 
 #### Creating a Mongodb database
 https://www.mongodb.com/basics/create-database
-
-#### Spring Cloud gateway
-Intro: https://spring.io/projects/spring-cloud-gateway/
-Complete documentation: https://docs.spring.io/spring-cloud-gateway/reference/spring-cloud-gateway.html
-
-#### Keyclock
-https://www.keycloak.org/documentation
-
-Docker install:
-https://www.keycloak.org/getting-started/getting-started-docker
-
-Command:
-sudo docker run -p 8181:8080 -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin quay.io/keycloak/keycloak:23.0.4 start-dev
-
-Configuration:
-issuer: http://localhost:8181/realms/estudou-realm
 
 #### Docker
 
@@ -78,3 +70,21 @@ https://techbeacon.com/app-dev-testing/what-apache-kafka-why-it-so-popular-shoul
 ### Configure MYSQL with test containers
 
 https://medium.com/@anil.java.story/springboot-test-containers-mysql-e0350645d608
+
+### CRUD com migrations
+https://www.youtube.com/watch?v=tP6wtEaCnSI
+
+Minuto 50: id sendo gerado no padrão UUID
+Sempre salvar os valores monetários como centavos (Front-end responsável por formatar - baita de um big brains move)
+
+### CommandLineRunner e suas aplicações
+
+Resposavel por rodar na inicialização do servidor
+
+Com o decorator @Component funciona (ainda não sei muito bem como) quando inicializa o servidor. Exemplos em MissionInitializer
+
+https://www.javaguides.net/2020/02/spring-boot-commandlinerunner-example.html#:~:text=CommandLineRunner%20is%20an%20interface%20used,the%20CommandLineRunner%20interface%20at%20JavaDoc.
+
+Error:
+ducerListener    : Exception thrown when sending a message with key='null' and payload='ScheduleVinculateGoalEvent(goalId=2)' to topic notificationTopic:
+org.apache.kafka.common.errors.TimeoutException: Topic notificationTopic not present in metadata after 60000 ms

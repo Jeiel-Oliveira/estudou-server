@@ -1,12 +1,15 @@
 package com.estudou.scheduleservice.service;
 
 import java.util.List;
+
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.estudou.scheduleservice.dto.GoalRequest;
 import com.estudou.scheduleservice.dto.ScheduleRequest;
 import com.estudou.scheduleservice.dto.ScheduleVinculateGoalRequest;
+import com.estudou.scheduleservice.event.ScheduleVinculateGoalEvent;
 import com.estudou.scheduleservice.exception.GoalNotFoundException;
 import com.estudou.scheduleservice.exception.ScheduleNotFoundException;
 import com.estudou.scheduleservice.model.Schedule;
@@ -22,6 +25,7 @@ public class ScheduleService {
 
   private final ScheduleRepository scheduleRepository;
   private final WebClient.Builder webClientBuilder;
+  private final KafkaTemplate<String, ScheduleVinculateGoalEvent> kafkaTemplate;
 
   public Schedule create(ScheduleRequest scheduleRequest) {
     Schedule schedule = Schedule.builder()
@@ -54,7 +58,8 @@ public class ScheduleService {
   }
 
   public GoalRequest vinculateGoal(String scheduleId, ScheduleVinculateGoalRequest scheduleVinculateGoalRequest) {
-    String goalEndpoint = "http://goal-service/api/goal/" + scheduleVinculateGoalRequest.getGoalId();
+    String goalId = scheduleVinculateGoalRequest.getGoalId();
+    String goalEndpoint = "http://goal-service/api/goal/" + goalId;
 
     GoalRequest goal = webClientBuilder.build().get()
       .uri(goalEndpoint)
@@ -63,13 +68,14 @@ public class ScheduleService {
       .block();
 
     if (goal == null) {
-      throw new GoalNotFoundException(scheduleVinculateGoalRequest.getGoalId());
+      throw new GoalNotFoundException(goalId);
     }
 
     Schedule schedule = scheduleRepository.findById(scheduleId)
       .orElseThrow(() -> new ScheduleNotFoundException(scheduleId));
 
-    schedule.setGoalId(scheduleVinculateGoalRequest.getGoalId());
+    schedule.setGoalId(goalId);
+    kafkaTemplate.send("notificationTopic", new ScheduleVinculateGoalEvent(goalId));
     scheduleRepository.save(schedule);
 
     return goal;
