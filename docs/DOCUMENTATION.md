@@ -26,11 +26,6 @@ https://www.youtube.com/watch?v=GBKY8QyfNDk
 #### Creating a Mongodb database
 https://www.mongodb.com/basics/create-database
 
-#### Docker
-
-Permissions related problems when execute docker-compose and how to fix:
-https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user
-
 #### Circuit breaker library in Java
 
 Aparentally is used to garanthe the calls from Promises or another services, in a micro-service architecture
@@ -84,7 +79,3 @@ Resposavel por rodar na inicialização do servidor
 Com o decorator @Component funciona (ainda não sei muito bem como) quando inicializa o servidor. Exemplos em MissionInitializer
 
 https://www.javaguides.net/2020/02/spring-boot-commandlinerunner-example.html#:~:text=CommandLineRunner%20is%20an%20interface%20used,the%20CommandLineRunner%20interface%20at%20JavaDoc.
-
-Error:
-ducerListener    : Exception thrown when sending a message with key='null' and payload='ScheduleVinculateGoalEvent(goalId=2)' to topic notificationTopic:
-org.apache.kafka.common.errors.TimeoutException: Topic notificationTopic not present in metadata after 60000 ms
