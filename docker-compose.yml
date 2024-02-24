@@ -2,19 +2,69 @@ version: '3'
 
 services:
 
+  ## MySQL Docker compose config
+  mysql-category:
+    container_name: mysql-category
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: "category_service"
+      MYSQL_USER: "jeiel"
+      MYSQL_PASSWORD: "jeiel"
+      MYSQL_ROOT_PASSWORD: "password"
+    expose:
+      - "3306"
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql-category:/data/mysql
+
+  ## Mongo configuration
+  mongo:
+    container_name: mongo-schedule
+    image: mongo:7.0.5-jammy
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    expose:
+      - "27017"
+    volumes:
+      - ./mongo-data:/data/db
+
+  ## Keycloak configuration
+  keycloak-mysql:
+    container_name: keycloak-mysql
+    image: mysql
+    volumes:
+      - ./mysql-keycloak-data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: "keycloak"
+      MYSQL_USER: "jeiel"
+      MYSQL_PASSWORD: "jeiel"
+      MYSQL_ROOT_PASSWORD: "password"
+
+  ## Need to verify realm-export.json
   keycloak:
       image: quay.io/keycloak/keycloak:23.0.4
       container_name: keycloak
-      environment:
-        - KEYCLOAK_ADMIN=admin
-        - KEYCLOAK_ADMIN_PASSWORD=admin
+      command: ["start-dev", "--import-realm"]
+      # environment:
+      #   DB_VENDOR: MYSQL
+      #   DB_ADDR: mysql
+      #   DB_DATABASE: keycloak
+      #   DB_USER: jeiel
+      #   DB_PASSWORD: jeiel
+      #   KEYCLOAK_ADMIN: admin
+      #   KEYCLOAK_ADMIN_PASSWORD: admin
       ports:
-        - "8181:8080"
+        - "8181:8181"
       restart: always
       volumes:
-        - .local/keycloak/:/opt/jboss/keycloak/standalone/data/
-      command: ["start-dev"]
+        - ./realms/:/opt/keycloak/data/import/
+      depends_on:
+        - keycloak-mysql
 
+  ## Zipkin configuration
   zipkin:
     image: openzipkin/zipkin
     container_name: zipkin
@@ -30,6 +80,7 @@ services:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 1000
 
+  ## Kafka broker
   broker:
     image: confluentinc/cp-kafka:7.5.3
     container_name: broker
@@ -45,3 +96,97 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+
+  # ## Eureka server
+  # discovery-server:
+  #   image: jeielalves/discovery-server:latest
+  #   container_name: discovery-server
+  #   pull_policy: always
+  #   ports:
+  #     - "8761:8761"
+  #   environment:
+  #     - SPRING_PROFILES_ACTIVE=docker
+  #   depends_on:
+  #     - zipkin
+
+  # ## API gateway
+  # api-gateway:
+  #   image: jeielalves/api-gateway:latest
+  #   container_name: api-gateway
+  #   pull_policy: always
+  #   ports:
+  #     - "8080:8080"
+  #   environment:
+  #     - SPRING_PROFILES_ACTIVE=docker
+  #     - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY=trace
+  #   depends_on:
+  #     - zipkin
+  #     - keycloak
+  #     - discovery-server
+
+  # ## Category service
+  # category-service:
+  #   container_name: category-service
+  #   image: jeielalves/category-service:latest
+  #   pull_policy: always
+  #   environment:
+  #     SPRING_PROFILES_ACTIVE: docker
+  #   depends_on:
+  #     - mysql-category
+  #     - discovery-server
+  #     - api-gateway
+  #     - zipkin
+
+  # ## Goal service
+  # goal-service:
+  #   container_name: goal-service
+  #   image: jeielalves/goal-service:latest
+  #   pull_policy: always
+  #   environment:
+  #     SPRING_PROFILES_ACTIVE: docker
+  #   depends_on:
+  #     ## Need to create one database per microservice
+  #     - mysql-category
+  #     - discovery-server
+  #     - api-gateway
+  #     - zipkin
+
+  # ## Mission service
+  # mission-service:
+  #   container_name: mission-service
+  #   image: jeielalves/mission-service:latest
+  #   pull_policy: always
+  #   environment:
+  #     SPRING_PROFILES_ACTIVE: docker
+  #   depends_on:
+  #     - mysql-category
+  #     - discovery-server
+  #     - api-gateway
+  #     - zipkin
+
+  # ## Notification service
+  # notification-service:
+  #   container_name: notification-service
+  #   image: jeielalves/notification-service:latest
+  #   pull_policy: always
+  #   environment:
+  #     SPRING_PROFILES_ACTIVE: docker
+  #   depends_on:
+  #     - zipkin
+  #     - broker
+  #     - discovery-server
+  #     - api-gateway
+
+  # ## Schedule service
+  # schedule-service:
+  #   container_name: schedule-service
+  #   image: jeielalves/mission-service:latest
+  #   pull_policy: always
+  #   environment:
+  #     SPRING_PROFILES_ACTIVE: docker
+  #   depends_on:
+  #     - mongo
+  #     - broker
+  #     - discovery-server
+  #     - api-gateway
+  #     - zipkin
