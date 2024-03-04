@@ -3,6 +3,9 @@
 Permissions related problems when execute docker-compose and how to fix:
 https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user
 
+DOCS:
+https://docs.docker.com/guides/get-started/
+
 Configuration to push images to docker hub:
 <to><image>registry.hub.docker.com/jeielalves/${project.artifactId}</image></to>
 
@@ -40,3 +43,6 @@ The main problem docker is trying to resolve, is the fact the application need t
 - The machine who is running your application in production has a different versions for any software you are using
 - Some new employee in the company, your the friends of yours joins the coding, and she or he needs to install locally everything to start running and coding
 
+CURRENT ERROR:
+
+api-gateway | org.springframework.security.authentication.AuthenticationServiceException: An error occurred while attempting to decode the Jwt:
