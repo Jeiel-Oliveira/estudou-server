@@ -12,8 +12,6 @@ services:
       MYSQL_USER: "jeiel"
       MYSQL_PASSWORD: "jeiel"
       MYSQL_ROOT_PASSWORD: "password"
-    expose:
-      - "3306"
     ports:
       - "3306:3306"
     volumes:
@@ -121,3 +119,16 @@ services:
       - zipkin
       - keycloak
       - discovery-server
+
+  ## Category service
+  category-service:
+    container_name: category-service
+    image: jeielalves/category-service:latest
+    pull_policy: always
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - mysql-category
+      - discovery-server
+      - api-gateway
+      - zipkin
