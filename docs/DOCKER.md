@@ -46,3 +46,6 @@ The main problem docker is trying to resolve, is the fact the application need t
 CURRENT ERROR:
 
 api-gateway | org.springframework.security.authentication.AuthenticationServiceException: An error occurred while attempting to decode the Jwt:
+
+Possible errors:
+- https://stackoverflow.com/questions/71974489/cannot-make-keycloak-work-inside-docker-compose-with-spring-boot-application
