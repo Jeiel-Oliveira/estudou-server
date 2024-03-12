@@ -30,6 +30,20 @@ services:
     volumes:
       - ./mysql-goal:/data/mysql
 
+  mysql-mission:
+    container_name: mysql-mission
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: "mission_service"
+      MYSQL_USER: "jeiel"
+      MYSQL_PASSWORD: "jeiel"
+      MYSQL_ROOT_PASSWORD: "password"
+    ports:
+      - "3308:3306"
+    volumes:
+      - ./mysql-mission:/data/mysql
+
   ## Mongo configuration
   mongo:
     container_name: mongo-schedule
@@ -161,15 +175,29 @@ services:
       - api-gateway
       - zipkin
 
-  # ## Mission Service
-  # mission-service:
-  #   container_name: mission-service
-  #   image: jeielalves/mission-service:latest
+  ## Mission Service
+  mission-service:
+    container_name: mission-service
+    image: jeielalves/mission-service:latest
+    pull_policy: always
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - mysql-mission
+      - discovery-server
+      - api-gateway
+      - zipkin
+
+  # ## Schedule Service
+  # schedule-service:
+  #   container_name: schedule-service
+  #   image: jeielalves/schedule-service:latest
   #   pull_policy: always
   #   environment:
   #     - SPRING_PROFILES_ACTIVE=docker
   #   depends_on:
-  #     - mysql-category
+  #     - mongo
+  #     - broker
   #     - discovery-server
   #     - api-gateway
   #     - zipkin
@@ -187,16 +215,3 @@ services:
   #     - discovery-server
   #     - api-gateway
 
-  # ## Schedule Service
-  # schedule-service:
-  #   container_name: schedule-service
-  #   image: jeielalves/schedule-service:latest
-  #   pull_policy: always
-  #   environment:
-  #     - SPRING_PROFILES_ACTIVE=docker
-  #   depends_on:
-  #     - mongo
-  #     - broker
-  #     - discovery-server
-  #     - api-gateway
-  #     - zipkin
