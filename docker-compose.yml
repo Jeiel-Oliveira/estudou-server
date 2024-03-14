@@ -7,10 +7,10 @@ services:
     image: mysql
     restart: always
     environment:
-      MYSQL_DATABASE: "category_service"
-      MYSQL_USER: "jeiel"
-      MYSQL_PASSWORD: "jeiel"
-      MYSQL_ROOT_PASSWORD: "password"
+      - MYSQL_DATABASE=category_service
+      - MYSQL_USER=jeiel
+      - MYSQL_PASSWORD=jeiel
+      - MYSQL_ROOT_PASSWORD=password
     ports:
       - "3306:3306"
     volumes:
@@ -21,10 +21,10 @@ services:
     image: mysql
     restart: always
     environment:
-      MYSQL_DATABASE: "goal_service"
-      MYSQL_USER: "jeiel"
-      MYSQL_PASSWORD: "jeiel"
-      MYSQL_ROOT_PASSWORD: "password"
+      - MYSQL_DATABASE=goal_service
+      - MYSQL_USER=jeiel
+      - MYSQL_PASSWORD=jeiel
+      - MYSQL_ROOT_PASSWORD=password
     ports:
       - "3307:3306"
     volumes:
@@ -35,17 +35,17 @@ services:
     image: mysql
     restart: always
     environment:
-      MYSQL_DATABASE: "mission_service"
-      MYSQL_USER: "jeiel"
-      MYSQL_PASSWORD: "jeiel"
-      MYSQL_ROOT_PASSWORD: "password"
+      - MYSQL_DATABASE=mission_service
+      - MYSQL_USER=jeiel
+      - MYSQL_PASSWORD=jeiel
+      - MYSQL_ROOT_PASSWORD=password
     ports:
       - "3308:3306"
     volumes:
       - ./mysql-mission:/data/mysql
 
   ## Mongo configuration
-  mongo:
+  mongo-schedule:
     container_name: mongo-schedule
     image: mongo:7.0.5-jammy
     restart: unless-stopped
@@ -64,10 +64,10 @@ services:
     volumes:
       - ./mysql-keycloak-data:/var/lib/mysql
     environment:
-      - MYSQL_DATABASE="keycloak"
-      - MYSQL_USER="jeiel"
-      - MYSQL_PASSWORD="jeiel"
-      - MYSQL_ROOT_PASSWORD="password"
+      - MYSQL_DATABASE=keycloak
+      - MYSQL_USER=jeiel
+      - MYSQL_PASSWORD=jeiel
+      - MYSQL_ROOT_PASSWORD=password
 
   ## Keycloak
   keycloak:
@@ -188,19 +188,19 @@ services:
       - api-gateway
       - zipkin
 
-  # ## Schedule Service
-  # schedule-service:
-  #   container_name: schedule-service
-  #   image: jeielalves/schedule-service:latest
-  #   pull_policy: always
-  #   environment:
-  #     - SPRING_PROFILES_ACTIVE=docker
-  #   depends_on:
-  #     - mongo
-  #     - broker
-  #     - discovery-server
-  #     - api-gateway
-  #     - zipkin
+  ## Schedule Service
+  schedule-service:
+    container_name: schedule-service
+    image: jeielalves/schedule-service:latest
+    pull_policy: always
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - mongo-schedule
+      - broker
+      - discovery-server
+      - api-gateway
+      - zipkin
 
   # ## Notification Service
   # notification-service:
