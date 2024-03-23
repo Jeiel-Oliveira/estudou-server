@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
-import com.estudou.scheduleservice.dto.GoalRequest;
 import com.estudou.scheduleservice.dto.ScheduleRequest;
 import com.estudou.scheduleservice.dto.ScheduleVinculateGoalRequest;
 import com.estudou.scheduleservice.exception.GoalServiceUnavailableException;
@@ -63,16 +63,17 @@ public class ScheduleController {
   @ResponseStatus(HttpStatus.OK)
   @RequestMapping("/{scheduleId}/goals")
   @CircuitBreaker(name="goal", fallbackMethod="fallbackGoal")
-  @TimeLimiter(name="goal")
+  @TimeLimiter(name="goal", fallbackMethod="fallbackGoal")
   @Retry(name="goal")
-  public CompletableFuture<GoalRequest> vinculateGaol(@PathVariable(value="scheduleId") String scheduleId, @RequestBody ScheduleVinculateGoalRequest scheduleVinculateGoalRequest) {
+  public CompletableFuture<Schedule> vinculateGaol(@PathVariable(value="scheduleId") String scheduleId, @RequestBody ScheduleVinculateGoalRequest scheduleVinculateGoalRequest) {
     return CompletableFuture.supplyAsync(() -> scheduleService.vinculateGoal(scheduleId, scheduleVinculateGoalRequest)) ;
   }
 
-  public CompletableFuture<GoalRequest> fallbackGoal (
+  public CompletableFuture<Schedule> fallbackGoal (
     String scheduleId,
     ScheduleVinculateGoalRequest scheduleVinculateGoalRequest,
-    RuntimeException runtimeException) throws GoalServiceUnavailableException {
-    throw new GoalServiceUnavailableException();
+    ResponseStatusException responseStatusException) throws ResponseStatusException {
+    System.out.println(responseStatusException);
+    throw new GoalServiceUnavailableException(responseStatusException.getReason());
   }
 }

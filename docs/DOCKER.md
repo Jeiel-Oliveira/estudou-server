@@ -32,6 +32,8 @@ Commands:
 docker login
 mvn clean compile jib:build
 
+docker compose -f docker-compose-local.yml up
+
 #### Basics of docker
 
 Simple guide:

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GoalRequest {
+    private String id;
     private String dayId;
     private String title;
     private String text;

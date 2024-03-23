@@ -79,3 +79,10 @@ Resposavel por rodar na inicialização do servidor
 Com o decorator @Component funciona (ainda não sei muito bem como) quando inicializa o servidor. Exemplos em MissionInitializer
 
 https://www.javaguides.net/2020/02/spring-boot-commandlinerunner-example.html#:~:text=CommandLineRunner%20is%20an%20interface%20used,the%20CommandLineRunner%20interface%20at%20JavaDoc.
+
+
+#### Response error handler
+https://bootcamptoprod.com/customizing-404-response-springboot/
+
+webclient error handler:
+https://mohosinmiah1610.medium.com/error-handling-with-webclient-in-spring-boot-e604733071e0

@@ -13,15 +13,15 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 public class SecurityConfig {
 
     @Bean
-    public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity serverHttpSecurity) {
+    public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity serverHttpSecurity) throws Exception {
         serverHttpSecurity
-                .csrf(ServerHttpSecurity.CsrfSpec::disable)
-                .authorizeExchange(exchange ->
-                        exchange.pathMatchers("/eureka/**")
-                                .permitAll()
-                                .anyExchange()
-                                .authenticated())
-                .oauth2ResourceServer(spec -> spec.jwt(Customizer.withDefaults()));
+        .csrf(ServerHttpSecurity.CsrfSpec::disable)
+        .authorizeExchange(exchange ->
+                exchange.pathMatchers("/eureka/**")
+                        .permitAll()
+                        .anyExchange()
+                        .authenticated())
+        .oauth2ResourceServer(spec -> spec.jwt(Customizer.withDefaults()));
 
         return serverHttpSecurity.build();
     }

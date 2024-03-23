@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -32,13 +34,16 @@ public class ApplicationExceptionHandler {
     }
 
     @ExceptionHandler(GoalNotFoundException.class)
-    public Map<String, Object> handleBussinessException (GoalNotFoundException exception) {
+    public ResponseEntity<Map<String, Object>> handleBussinessException (GoalNotFoundException exception) {
         Map<String, Object> errorMap = new HashMap<>();
 
         errorMap.put("status", exception.getStatusCode());
         errorMap.put("message", exception.getReason());
 
-        return errorMap;
+        return ResponseEntity
+            .status(exception.getStatusCode())
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(errorMap);
     }
 
 }

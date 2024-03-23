@@ -57,28 +57,28 @@ public class ScheduleService {
     return schedules.stream().map(this::mapToScheduleResponse).toList();
   }
 
-  public GoalRequest vinculateGoal(String scheduleId, ScheduleVinculateGoalRequest scheduleVinculateGoalRequest) {
+  public Schedule vinculateGoal(String scheduleId, ScheduleVinculateGoalRequest scheduleVinculateGoalRequest) {
     String goalId = scheduleVinculateGoalRequest.getGoalId();
-    String goalEndpoint = "http://goal-service/api/goal/" + goalId;
 
-    GoalRequest goal = webClientBuilder.build().get()
-      .uri(goalEndpoint)
+    GoalRequest goal = webClientBuilder.build()
+      .get()
+      .uri("http://goal-service/api/goal/" + goalId)
       .retrieve()
       .bodyToMono(GoalRequest.class)
+      // [TODO] Is necessary to map another possibles errors in addition to GoalNotFoundException
+      .onErrorMap(error -> new GoalNotFoundException(goalId))
       .block();
 
-    if (goal == null) {
-      throw new GoalNotFoundException(goalId);
-    }
+    log.info("goal finded", goal);
 
     Schedule schedule = scheduleRepository.findById(scheduleId)
       .orElseThrow(() -> new ScheduleNotFoundException(scheduleId));
 
-    schedule.setGoalId(goalId);
+    schedule.setGoalId(goal.getId());
     kafkaTemplate.send("notificationTopic", new ScheduleVinculateGoalEvent(goalId));
     scheduleRepository.save(schedule);
 
-    return goal;
+    return schedule;
   }
 
   private Schedule mapToScheduleResponse(Schedule schedule) {
