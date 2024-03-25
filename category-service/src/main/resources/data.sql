@@ -1,1 +1,1 @@
-CREATE DATABASE IF NOT EXISTS category_service;
+CREATE DATABASE IF NOT EXISTS estudou_db;

@@ -2,51 +2,23 @@ version: '3'
 
 services:
   ## MySQL Docker compose config
-  mysql-category:
-    container_name: mysql-category
+  mysql-estudou:
+    container_name: mysql-estudou
     image: mysql
     restart: always
     environment:
-      - MYSQL_DATABASE=category_service
+      - MYSQL_DATABASE=estudou_db
       - MYSQL_USER=jeiel
       - MYSQL_PASSWORD=jeiel
       - MYSQL_ROOT_PASSWORD=password
     ports:
       - "3306:3306"
     volumes:
-      - ./mysql-category:/data/mysql
-
-  mysql-goal:
-    container_name: mysql-goal
-    image: mysql
-    restart: always
-    environment:
-      - MYSQL_DATABASE=goal_service
-      - MYSQL_USER=jeiel
-      - MYSQL_PASSWORD=jeiel
-      - MYSQL_ROOT_PASSWORD=password
-    ports:
-      - "3307:3306"
-    volumes:
-      - ./mysql-goal:/data/mysql
-
-  mysql-mission:
-    container_name: mysql-mission
-    image: mysql
-    restart: always
-    environment:
-      - MYSQL_DATABASE=mission_service
-      - MYSQL_USER=jeiel
-      - MYSQL_PASSWORD=jeiel
-      - MYSQL_ROOT_PASSWORD=password
-    ports:
-      - "3308:3306"
-    volumes:
-      - ./mysql-mission:/data/mysql
+      - ./mysql-estudou:/var/lib/mysql
 
   ## Mongo configuration
-  mongo-schedule:
-    container_name: mongo-schedule
+  mongo-estudou:
+    container_name: mongo-estudou
     image: mongo:7.0.5-jammy
     restart: unless-stopped
     ports:
@@ -55,19 +27,6 @@ services:
       - "27017"
     volumes:
       - ./mongo-data:/data/db
-
-  ## Keycloak configuration
-  ## Keycloak database
-  keycloak-mysql:
-    container_name: keycloak-mysql
-    image: mysql
-    volumes:
-      - ./mysql-keycloak-data:/var/lib/mysql
-    environment:
-      - MYSQL_DATABASE=keycloak
-      - MYSQL_USER=jeiel
-      - MYSQL_PASSWORD=jeiel
-      - MYSQL_ROOT_PASSWORD=password
 
   ## Keycloak
   keycloak:
@@ -88,7 +47,19 @@ services:
     volumes:
       - ./realms/:/opt/keycloak/data/import/
     depends_on:
-      - keycloak-mysql
+      - mysql-keycloak
+
+  ## Keycloak configuration
+  mysql-keycloak:
+    container_name: mysql-keycloak
+    image: mysql
+    volumes:
+      - ./mysql-keycloak:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=keycloak
+      - MYSQL_USER=jeiel
+      - MYSQL_PASSWORD=jeiel
+      - MYSQL_ROOT_PASSWORD=password
 
   zipkin:
     image: openzipkin/zipkin
@@ -102,8 +73,8 @@ services:
     ports:
       - "2181:2181"
     environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 1000
+      - ZOOKEEPER_CLIENT_PORT=2181
+      - ZOOKEEPER_TICK_TIME=1000
 
   ## KAFKA broker
   broker:
@@ -157,7 +128,7 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:
-      - mysql-category
+      - mysql-estudou
       - discovery-server
       - api-gateway
       - zipkin
@@ -170,7 +141,7 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:
-      - mysql-goal
+      - mysql-estudou
       - discovery-server
       - api-gateway
       - zipkin
@@ -183,7 +154,7 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:
-      - mysql-mission
+      - mysql-estudou
       - discovery-server
       - api-gateway
       - zipkin
@@ -196,7 +167,7 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:
-      - mongo-schedule
+      - mongo-estudou
       - broker
       - discovery-server
       - api-gateway
