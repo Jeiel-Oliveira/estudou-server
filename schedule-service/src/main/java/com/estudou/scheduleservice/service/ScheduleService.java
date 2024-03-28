@@ -48,6 +48,7 @@ public class ScheduleService {
   }
 
   public boolean delete(String scheduleId) {
+    findById(scheduleId);
     scheduleRepository.deleteById(scheduleId);
     return true;
   }
@@ -60,6 +61,8 @@ public class ScheduleService {
   public Schedule vinculateGoal(String scheduleId, ScheduleVinculateGoalRequest scheduleVinculateGoalRequest) {
     String goalId = scheduleVinculateGoalRequest.getGoalId();
 
+    Schedule schedule = findById(scheduleId);
+
     GoalRequest goal = webClientBuilder.build()
       .get()
       .uri("http://goal-service/api/goal/" + goalId)
@@ -70,9 +73,6 @@ public class ScheduleService {
       .block();
 
     log.info("goal finded", goal);
-
-    Schedule schedule = scheduleRepository.findById(scheduleId)
-      .orElseThrow(() -> new ScheduleNotFoundException(scheduleId));
 
     schedule.setGoalId(goal.getId());
     kafkaTemplate.send("notificationTopic", new ScheduleVinculateGoalEvent(goalId));
