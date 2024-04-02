@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.estudou.scheduleservice.advice.ResponseAdvice;
 import com.estudou.scheduleservice.dto.ScheduleRequest;
 import com.estudou.scheduleservice.dto.ScheduleVinculateGoalRequest;
 import com.estudou.scheduleservice.exception.GoalServiceUnavailableException;
@@ -35,28 +36,45 @@ public class ScheduleController {
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public Schedule create(@Valid @RequestBody ScheduleRequest scheduleRequest) {
-    // Check if the goal exist before create a schedule
-    return scheduleService.create(scheduleRequest);
-  }
+  public ResponseAdvice<Schedule> create(@Valid @RequestBody ScheduleRequest scheduleRequest) {
+    Schedule schedule = scheduleService.create(scheduleRequest);
 
-  @DeleteMapping("/{scheduleId}")
-  @ResponseStatus(HttpStatus.OK)
-  public String delete(@PathVariable(value="scheduleId") String scheduleId) {
-    scheduleService.delete(scheduleId);
-    return String.format("Schedule %s successfully deleted", scheduleId);
+    ResponseAdvice<Schedule> responseAdvice = new ResponseAdvice<Schedule>(
+        HttpStatus.CREATED,
+        "Schedule created successfully.",
+        schedule
+    );
+
+    return responseAdvice;
   }
 
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
-  public List<Schedule> findAll() {
-    return scheduleService.findAll();
+  public ResponseAdvice<List<Schedule>> findAll() {
+
+    List<Schedule> schedules = scheduleService.findAll();
+
+    ResponseAdvice<List<Schedule>> responseAdvice = new ResponseAdvice<List<Schedule>>(
+        HttpStatus.OK,
+        "Schedules found successfully.",
+        schedules
+    );
+
+    return responseAdvice;
   }
 
   @GetMapping("/{scheduleId}")
   @ResponseStatus(HttpStatus.OK)
-  public Schedule findById(@PathVariable(value="scheduleId") String scheduleId) {
-    return scheduleService.findById(scheduleId);
+  public ResponseAdvice<Schedule> findById(@PathVariable(value="scheduleId") String scheduleId) {
+    Schedule schedule = scheduleService.findById(scheduleId);
+
+    ResponseAdvice<Schedule> responseAdvice = new ResponseAdvice<Schedule>(
+        HttpStatus.OK,
+        "Schedule found successfully.",
+        schedule
+    );
+
+    return responseAdvice;
   }
 
   @PostMapping
@@ -65,11 +83,35 @@ public class ScheduleController {
   @CircuitBreaker(name="goal", fallbackMethod="fallbackGoal")
   @TimeLimiter(name="goal", fallbackMethod="fallbackGoal")
   @Retry(name="goal")
-  public CompletableFuture<Schedule> vinculateGaol(@PathVariable(value="scheduleId") String scheduleId, @RequestBody ScheduleVinculateGoalRequest scheduleVinculateGoalRequest) {
-    return CompletableFuture.supplyAsync(() -> scheduleService.vinculateGoal(scheduleId, scheduleVinculateGoalRequest)) ;
+  public CompletableFuture<ResponseAdvice<Schedule>> vinculateGaol(@PathVariable(value="scheduleId") String scheduleId, @RequestBody ScheduleVinculateGoalRequest scheduleVinculateGoalRequest) {
+    return CompletableFuture.supplyAsync(() -> {
+      Schedule schedule = scheduleService.vinculateGoal(scheduleId, scheduleVinculateGoalRequest);
+
+      ResponseAdvice<Schedule> responseAdvice = new ResponseAdvice<Schedule>(
+        HttpStatus.OK,
+        String.format("Schedule successfully vinculate with goal %s", scheduleVinculateGoalRequest.getGoalId()),
+        schedule
+      );
+
+      return responseAdvice;
+    });
   }
 
-  public CompletableFuture<Schedule> fallbackGoal (
+  @DeleteMapping("/{scheduleId}")
+  @ResponseStatus(HttpStatus.OK)
+  public ResponseAdvice<String> delete(@PathVariable(value="scheduleId") String scheduleId) {
+    scheduleService.delete(scheduleId);
+
+    ResponseAdvice<String> responseAdvice = new ResponseAdvice<String>(
+        HttpStatus.OK,
+        String.format("Schedule %s successfully deleted", scheduleId),
+        null
+    );
+
+    return responseAdvice;
+  }
+
+  public CompletableFuture<ResponseAdvice<Schedule>> fallbackGoal (
     String scheduleId,
     ScheduleVinculateGoalRequest scheduleVinculateGoalRequest,
     ResponseStatusException responseStatusException) throws ResponseStatusException {

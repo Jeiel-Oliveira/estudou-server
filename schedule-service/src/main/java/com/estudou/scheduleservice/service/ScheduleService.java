@@ -74,7 +74,7 @@ public class ScheduleService {
 
     log.info("goal finded", goal);
 
-    schedule.setGoalId(goal.getId());
+    schedule.setGoalId(goalId);
     kafkaTemplate.send("notificationTopic", new ScheduleVinculateGoalEvent(goalId));
     scheduleRepository.save(schedule);
 

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.estudou.goalsservice.advice.ResponseAdvice;
 import com.estudou.goalsservice.dto.GoalRequest;
 import com.estudou.goalsservice.model.Goal;
 import com.estudou.goalsservice.service.GoalService;
@@ -30,27 +31,58 @@ public class GoalController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Goal create(@Valid @RequestBody GoalRequest goalRequest) {
-        return goalService.create(goalRequest);
+    public ResponseAdvice<Goal> create(@Valid @RequestBody GoalRequest goalRequest) {
+        Goal goal = goalService.create(goalRequest);
+
+        ResponseAdvice<Goal> responseAdvice = new ResponseAdvice<Goal>(
+            HttpStatus.CREATED,
+            "Goal created successfully.",
+            goal
+        );
+
+        return responseAdvice;
     }
 
     @GetMapping("/{goalId}")
     @ResponseStatus(HttpStatus.OK)
-    public Goal findById(@PathVariable(value="goalId") String goalId) {
-        return goalService.findById(Long.parseLong(goalId));
+    public ResponseAdvice<Goal> findById(@PathVariable(value="goalId") String goalId) {
+        Goal goal = goalService.findById(Long.parseLong(goalId));
+
+        ResponseAdvice<Goal> responseAdvice = new ResponseAdvice<Goal>(
+            HttpStatus.OK,
+            "Goal found successfully.",
+            goal
+        );
+
+        return responseAdvice;
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<Goal> findAll() {
-        return goalService.findAll();
+    public ResponseAdvice<List<Goal>> findAll() {
+        List<Goal> goals = goalService.findAll();
+
+        ResponseAdvice<List<Goal>> responseAdvice = new ResponseAdvice<List<Goal>>(
+            HttpStatus.OK,
+            "Goals found successfully.",
+            goals
+        );
+
+        return responseAdvice;
     }
 
     @DeleteMapping("/{goalId}")
     @ResponseStatus(HttpStatus.OK)
-    public String delete(@PathVariable(value="goalId") String goalId) {
+    public ResponseAdvice<String> delete(@PathVariable(value="goalId") String goalId) {
         goalService.delete(goalId);
-        return String.format("Goal %s was deleted", goalId);
+
+        ResponseAdvice<String> responseAdvice = new ResponseAdvice<String>(
+            HttpStatus.OK,
+            String.format("Goal %s deleted successfully.", goalId),
+            null
+        );
+
+        return responseAdvice;
     }
 
 }

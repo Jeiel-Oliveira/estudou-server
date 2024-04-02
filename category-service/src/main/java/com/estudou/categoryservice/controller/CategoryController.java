@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.estudou.categoryservice.dto.CategoryRequest;
+import com.estudou.categoryservice.exception.ResponseAdvice;
 import com.estudou.categoryservice.model.Category;
 import com.estudou.categoryservice.service.CategoryService;
-
 import jakarta.validation.Valid;
 
 import java.util.List;
@@ -29,27 +29,57 @@ public class CategoryController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Category create(@Valid @RequestBody CategoryRequest categoryRequest) {
-        return categoryService.create(categoryRequest);
+    public ResponseAdvice<Category> create(@Valid @RequestBody CategoryRequest categoryRequest) {
+        Category category = categoryService.create(categoryRequest);
+
+        ResponseAdvice<Category> responseAdvice = new ResponseAdvice<Category>(
+            HttpStatus.CREATED,
+            "Category created successfully.",
+            category
+        );
+
+        return  responseAdvice;
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<Category> findAll() {
+    public ResponseAdvice<List<Category>> findAll() {
         List<Category> categories = categoryService.findAll();
-        return categories;
+
+        ResponseAdvice<List<Category>> responseAdvice = new ResponseAdvice<List<Category>>(
+            HttpStatus.OK,
+            "Categories found successfully.",
+            categories
+        );
+
+        return responseAdvice;
     }
 
     @GetMapping("/{categoryId}")
     @ResponseStatus(HttpStatus.OK)
-    public Category findById(@PathVariable(value="categoryId") String categoryId) {
-        return categoryService.findById(categoryId);
+    public ResponseAdvice<Category> findById(@PathVariable(value="categoryId") String categoryId) {
+        Category category = categoryService.findById(categoryId);
+
+        ResponseAdvice<Category> responseAdvice = new ResponseAdvice<Category>(
+            HttpStatus.OK,
+            "Category found successfully",
+            category
+        );
+
+        return responseAdvice;
     }
 
     @DeleteMapping("/{categoryId}")
     @ResponseStatus(HttpStatus.OK)
-    public String delete(@PathVariable(value="categoryId") String categoryId) {
+    public ResponseAdvice<String> delete(@PathVariable(value="categoryId") String categoryId) {
         categoryService.delete(categoryId);
-        return String.format("Category %s successfully deleted", categoryId);
+
+        ResponseAdvice<String> responseAdvice = new ResponseAdvice<String>(
+            HttpStatus.OK,
+            String.format("Category %s successfully deleted", categoryId),
+            null
+        );
+
+        return responseAdvice;
     }
 }

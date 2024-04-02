@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.estudou.goalsservice.exception.ErrorAdvice;
 import com.estudou.goalsservice.exception.GoalNotFoundException;
 
 @RestControllerAdvice
@@ -19,30 +18,36 @@ public class ApplicationExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, Object>> handleInvalidArgument(MethodArgumentNotValidException exception) {
+    public ResponseEntity<ResponseAdvice<Map<String, Object>>> handleInvalidArgument(MethodArgumentNotValidException exception) {
         Map<String, Object> fieldsHashMap = new HashMap<>();
 
         exception.getBindingResult().getFieldErrors().forEach(error -> {
             fieldsHashMap.put(error.getField(), error.getDefaultMessage());
         });
 
-        ErrorAdvice errorAdvice = new ErrorAdvice(exception.getStatusCode(), "Invalid fields", fieldsHashMap);
-        Map<String, Object> errorParent = errorAdvice.toHashMap();
+        ResponseAdvice<Map<String, Object>> errorAdvice = new ResponseAdvice<Map<String, Object>>(
+            exception.getStatusCode(),
+            "Invalid fields",
+            fieldsHashMap
+        );
 
         return ResponseEntity
             .status(exception.getStatusCode())
             .contentType(MediaType.APPLICATION_JSON)
-            .body(errorParent);
+            .body(errorAdvice);
     }
 
     @ExceptionHandler(GoalNotFoundException.class)
-    public ResponseEntity<Map<String, Object>> handleBussinessException (GoalNotFoundException exception) {
-        ErrorAdvice errorAdvice = new ErrorAdvice(exception.getStatusCode(), exception.getReason(), null);
-        Map<String, Object> errorMap = errorAdvice.toHashMap();
+    public ResponseEntity<ResponseAdvice<Map<String, Object>>> handleBussinessException (GoalNotFoundException exception) {
+        ResponseAdvice<Map<String, Object>> errorAdvice = new ResponseAdvice<Map<String, Object>>(
+            exception.getStatusCode(),
+            exception.getReason(),
+            null
+        );
 
         return ResponseEntity
             .status(exception.getStatusCode())
             .contentType(MediaType.APPLICATION_JSON)
-            .body(errorMap);
+            .body(errorAdvice);
     }
 }
