@@ -51,3 +51,6 @@ api-gateway | org.springframework.security.authentication.AuthenticationServiceE
 
 Possible errors:
 - https://stackoverflow.com/questions/71974489/cannot-make-keycloak-work-inside-docker-compose-with-spring-boot-application
+
+Prometheus and grafana explanation:
+https://www.youtube.com/watch?v=qvwI3OHDovE

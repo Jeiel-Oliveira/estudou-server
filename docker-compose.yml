@@ -76,7 +76,7 @@ services:
       - ZOOKEEPER_CLIENT_PORT=2181
       - ZOOKEEPER_TICK_TIME=1000
 
-  ## KAFKA broker
+  ## KAFKA Broker
   broker:
     image: confluentinc/cp-kafka:7.5.3
     container_name: broker
@@ -93,7 +93,38 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
 
-  ## DISCOVERY SERVER
+  # ## Promotheus
+  # promotheus:
+  #   image: prom/prometheus:v2.51.0
+  #   container_name: prometheus
+  #   restart: unless-stopped
+  #   ports:
+  #     - "9090:9090"
+  #   volumes:
+  #     - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+  #   depends_on:
+  #     - category-service
+  #     - goal-service
+  #     - mission-service
+  #     - schedule-service
+  #     - notification-service
+
+  # ## Grafana
+  # grafana:
+  #   image: grafana/grafana-oss:10.1.9
+  #   container_name: grafana
+  #   restart: unless-stopped
+  #   ports:
+  #     - "3000:3000"
+  #   links:
+  #     - promotheus:prometheus
+  #   volumes:
+  #     - grafana_storage:/var/lib/grafana
+  #   environment:
+  #     - GF_SECURITY_ADMIN_USER=admin
+  #     - GF_SECURITY_ADMIN_PASSWORD=password
+
+  ## Discovery server
   discovery-server:
     image: jeielalves/discovery-server:latest
     container_name: discovery-server
@@ -105,7 +136,7 @@ services:
     depends_on:
       - zipkin
 
-  ## API GATEWAY
+  ## API Gateway
   api-gateway:
     image: jeielalves/api-gateway:latest
     container_name: api-gateway
@@ -120,7 +151,7 @@ services:
       - keycloak
       - discovery-server
 
-  ## Category service
+  ## Category Service
   category-service:
     container_name: category-service
     image: jeielalves/category-service:latest
@@ -128,10 +159,10 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:
+      - zipkin
       - mysql-estudou
       - discovery-server
       - api-gateway
-      - zipkin
 
   ## Goal Service
   goal-service:
@@ -141,10 +172,10 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:
+      - zipkin
       - mysql-estudou
       - discovery-server
       - api-gateway
-      - zipkin
 
   ## Mission Service
   mission-service:
@@ -154,10 +185,10 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:
+      - zipkin
       - mysql-estudou
       - discovery-server
       - api-gateway
-      - zipkin
 
   ## Schedule Service
   schedule-service:
@@ -167,11 +198,11 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:
+      - zipkin
       - mongo-estudou
       - broker
       - discovery-server
       - api-gateway
-      - zipkin
 
   ## Notification Service
   notification-service:
@@ -186,3 +217,5 @@ services:
       - discovery-server
       - api-gateway
 
+# volumes:
+#   grafana_storage: {}
