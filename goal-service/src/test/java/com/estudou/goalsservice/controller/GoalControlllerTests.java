@@ -10,6 +10,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -46,31 +47,43 @@ public class GoalControlllerTests {
 
 		mockMvc.perform(
 			post("/api/goal")
-			.contentType(MediaType.APPLICATION_JSON)
-			.content(goalRequestString))
-			.andExpect(status().isCreated());
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(goalRequestString)
+		).andExpect(status().isCreated());
 	}
 
 	@Test
 	void shouldFailWithoutRequiredFields() throws Exception {
 		mockMvc.perform(
 			post("/api/goal")
-			.contentType(MediaType.APPLICATION_JSON)
-			.content("{}"))
-			.andExpect(status().isBadRequest());
+				.contentType(MediaType.APPLICATION_JSON)
+				.content("{}")
+		).andExpect(status().isBadRequest());
+	}
+
+	@Test
+	void shouldUpdate() throws Exception {
+		GoalRequest goalRequest = getGoalRequest();
+		String goalRequestString = objectMapper.writeValueAsString(goalRequest);
+
+		mockMvc.perform(
+			patch("/api/goal/1")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(goalRequestString)
+		).andExpect(status().isOk());
 	}
 
 	@Test
 	void shouldFindById() throws Exception {
         when(goalService.findById(any())).thenReturn(generateGoal());
 
-		mockMvc.perform(get("/api/goal/1")
-		    .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk());
+		mockMvc.perform(
+			get("/api/goal/1").contentType(MediaType.APPLICATION_JSON)
+		).andExpect(status().isOk());
 
-		MvcResult result = mockMvc.perform(get("/api/goal/1")
-            .contentType(MediaType.APPLICATION_JSON))
-            .andReturn();
+		MvcResult result = mockMvc.perform(
+			get("/api/goal/1").contentType(MediaType.APPLICATION_JSON)
+		).andReturn();
 
 		String content = result.getResponse().getContentAsString();
 		Assertions.assertNotNull(content);
@@ -99,7 +112,6 @@ public class GoalControlllerTests {
 		goalRequest.setColor("blue");
 		goalRequest.setText("Concluir o curso");
 		goalRequest.setTitle("Curso");
-		goalRequest.setDayId("1");
 
 		return goalRequest;
 	}

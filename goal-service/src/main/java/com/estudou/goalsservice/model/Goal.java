@@ -21,7 +21,6 @@ public class Goal {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String dayId;
     private String title;
     private String text;
     private String color;

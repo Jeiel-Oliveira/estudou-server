@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,6 +38,20 @@ public class GoalController {
         ResponseAdvice<Goal> responseAdvice = new ResponseAdvice<Goal>(
             HttpStatus.CREATED,
             "Goal created successfully.",
+            goal
+        );
+
+        return responseAdvice;
+    }
+
+    @PatchMapping("/{goalId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseAdvice<Goal> update(@PathVariable(value="goalId") String goalId, @Valid @RequestBody GoalRequest goalRequest) {
+        Goal goal = goalService.update(goalId, goalRequest);
+
+        ResponseAdvice<Goal> responseAdvice = new ResponseAdvice<Goal>(
+            HttpStatus.OK,
+            "Goal updated successfully.",
             goal
         );
 

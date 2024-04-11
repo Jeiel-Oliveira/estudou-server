@@ -41,6 +41,26 @@ public class GoalServiceTests {
     }
 
     @Test
+    void shouldUpdate() {
+        GoalRequest goalRequest = generateGoalRequest();
+        String goalId = "1";
+
+        Goal updatedGoal = generateGoal();
+        updatedGoal.setTitle("Estudando");
+        goalRequest.setTitle("Estudando");
+
+        when(goalRepository.save(any())).thenReturn(updatedGoal);
+        when(goalRepository.findById(Long.parseLong(goalId))).thenReturn(generateOptionsGoal());
+
+        Goal goalResponse = goalService.update(goalId, goalRequest);
+
+        Assertions.assertEquals(goalResponse.getText(), "Estudar");
+        Assertions.assertEquals(goalResponse.getTitle(), "Estudando");
+        Assertions.assertEquals(goalResponse.getId(), 1L);
+        Assertions.assertInstanceOf(Goal.class, goalResponse);
+    }
+
+    @Test
     void shoudlFindAll() {
         List<Goal> goals = Arrays.asList(generateGoal(), generateGoal());
         when(goalRepository.findAll()).thenReturn(goals);
@@ -80,7 +100,6 @@ public class GoalServiceTests {
 		goalRequest.setColor("blue");
 		goalRequest.setText("Concluir o curso");
 		goalRequest.setTitle("Curso");
-		goalRequest.setDayId("1");
 
 		return goalRequest;
 	}
