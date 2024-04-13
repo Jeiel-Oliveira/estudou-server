@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -42,18 +43,32 @@ class CategoryControllerTests {
 
         when(categoryService.create(any())).thenReturn(generateCategory());
 
-        mockMvc.perform(post("/api/category")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(categoryRequestToString))
-            .andExpect(status().isCreated());
+        mockMvc.perform(
+            post("/api/category")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(categoryRequestToString)
+        ).andExpect(status().isCreated());
     }
 
     @Test
     void shouldFailCreationWithoutName() throws Exception {
-        mockMvc.perform(post("/api/category")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content("{}"))
-            .andExpect(status().isBadRequest());
+        mockMvc.perform(
+            post("/api/category")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{}")
+        ).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldUpdate() throws Exception {
+        CategoryRequest categoryRequest = generateCategoryRequest();
+        String categoryRequestString = objectMapper.writeValueAsString(categoryRequest);
+
+        mockMvc.perform(
+            patch("/api/category/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(categoryRequestString)
+        ).andExpect(status().isOk());
     }
 
     @Test
@@ -61,8 +76,9 @@ class CategoryControllerTests {
         Category category = generateCategory();
         when(categoryService.findById(any())).thenReturn(category);
 
-        mockMvc.perform(get("/api/category/1", 1L))
-            .andExpect(status().isOk());
+        mockMvc.perform(
+            get("/api/category/1", 1L)
+        ).andExpect(status().isOk());
     }
 
     @Test
@@ -70,16 +86,18 @@ class CategoryControllerTests {
         List<Category> categories = Arrays.asList(generateCategory(), generateCategory());
         when(categoryService.findAll()).thenReturn(categories);
 
-        mockMvc.perform(get("/api/category"))
-            .andExpect(status().isOk());
+        mockMvc.perform(
+            get("/api/category")
+        ).andExpect(status().isOk());
     }
 
     @Test
     void shouldProperlyDelete() throws Exception {
         when(categoryService.delete(any())).thenReturn(true);
 
-        mockMvc.perform(delete("/api/category/{categoryId}", 1L))
-            .andExpect(status().isOk());
+        mockMvc.perform(
+            delete("/api/category/{categoryId}", 1L)
+        ).andExpect(status().isOk());
     }
 
     Category generateCategory() {

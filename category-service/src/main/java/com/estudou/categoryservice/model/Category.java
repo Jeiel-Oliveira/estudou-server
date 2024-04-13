@@ -1,5 +1,7 @@
 package com.estudou.categoryservice.model;
 
+import com.estudou.categoryservice.dto.CategoryRequest;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,4 +25,13 @@ public class Category {
 
     private String name;
     private String color;
+
+    public static Category factoryCategoryRequest(CategoryRequest categoryRequest) {
+        Category category = new Category();
+
+        category.setName(categoryRequest.getName());
+        category.setColor(categoryRequest.getColor());
+
+        return category;
+    }
 }

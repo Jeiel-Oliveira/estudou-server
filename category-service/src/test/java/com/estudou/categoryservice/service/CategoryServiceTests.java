@@ -42,6 +42,27 @@ public class CategoryServiceTests {
     }
 
     @Test
+    void shouldUpdate() {
+        CategoryRequest categoryRequest = generateCategoryRequest();
+        String categoryId = "1";
+
+        Category updatedCategory = generateCategory();
+        updatedCategory.setName("Teste");
+        categoryRequest.setName("Teste");
+
+        when(categoryRepository.save(any())).thenReturn(updatedCategory);
+        when(categoryRepository.findById(Long.parseLong(categoryId))).thenReturn(generateOptionalCategory());
+
+        Category categoryResponse = categoryService.update(categoryId, categoryRequest);
+
+        Assertions.assertEquals(categoryResponse.getName(), "Teste");
+        Assertions.assertEquals(categoryResponse.getColor(), "Blue");
+        Assertions.assertEquals(categoryResponse.getId(), 1L);
+
+        Assertions.assertInstanceOf(Category.class, categoryResponse);
+    }
+
+    @Test
     void shouldFindAll() {
         List<Category> categories = Arrays.asList(generateCategory(), generateCategory());
         when(categoryRepository.findAll()).thenReturn(categories);

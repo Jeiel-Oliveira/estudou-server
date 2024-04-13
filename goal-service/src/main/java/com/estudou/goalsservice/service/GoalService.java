@@ -17,7 +17,7 @@ public class GoalService {
     private final GoalRepository goalRepository;
 
     public Goal create(GoalRequest goalRequest) {
-        Goal goal = generateGoalByRequest(goalRequest);
+        Goal goal = Goal.factoryGoalRequest(goalRequest);
         return goalRepository.save(goal);
     }
 
@@ -25,7 +25,7 @@ public class GoalService {
         Long parsedGoalId = Long.parseLong(goalId);
         findById(parsedGoalId);
 
-        Goal goal = generateGoalByRequest(goalRequest);
+        Goal goal = Goal.factoryGoalRequest(goalRequest);
         goal.setId(parsedGoalId);
 
         return goalRepository.save(goal);
@@ -47,16 +47,6 @@ public class GoalService {
     public Goal findById(Long goalId) {
         Goal goal = goalRepository.findById(goalId)
             .orElseThrow(() -> new GoalNotFoundException(Long.toString(goalId)));
-
-        return goal;
-    }
-
-    public Goal generateGoalByRequest(GoalRequest goalRequest) {
-        Goal goal = new Goal();
-
-        goal.setColor(goalRequest.getColor());
-        goal.setText(goalRequest.getText());
-        goal.setTitle(goalRequest.getTitle());
 
         return goal;
     }

@@ -2,6 +2,7 @@ package com.estudou.categoryservice.controller;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +18,6 @@ import jakarta.validation.Valid;
 
 import java.util.List;
 import org.springframework.http.HttpStatus;
-
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -39,6 +39,20 @@ public class CategoryController {
         );
 
         return  responseAdvice;
+    }
+
+    @PatchMapping("/{categoryId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseAdvice<Category> update(@PathVariable(value="categoryId") String categoryId, @Valid @RequestBody CategoryRequest categoryRequest) {
+        Category category = categoryService.update(categoryId, categoryRequest);
+
+        ResponseAdvice<Category> responseAdvice = new ResponseAdvice<Category>(
+            HttpStatus.OK,
+            "Category updated successfully.",
+            category
+        );
+
+        return responseAdvice;
     }
 
     @GetMapping

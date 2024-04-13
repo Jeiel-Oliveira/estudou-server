@@ -13,16 +13,22 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class CategoryService {
+
     private final CategoryRepository categoryRepository;
 
     public Category create(CategoryRequest categoryRequest) {
-        Category category = new Category();
+        Category category = Category.factoryCategoryRequest(categoryRequest);
+        return categoryRepository.save(category);
+    }
 
-        category.setName(categoryRequest.getName());
-        category.setColor(categoryRequest.getColor());
+    public Category update(String categoryId, CategoryRequest categoryRequest) {
+        Long parsedCategoryId = Long.parseLong(categoryId);
+        findById(categoryId);
 
-        Category categoryRes = categoryRepository.save(category);
-        return categoryRes;
+        Category category = Category.factoryCategoryRequest(categoryRequest);
+        category.setId(parsedCategoryId);
+
+        return categoryRepository.save(category);
     }
 
     public List<Category> findAll() {

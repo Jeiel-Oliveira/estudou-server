@@ -1,5 +1,7 @@
 package com.estudou.goalsservice.model;
 
+import com.estudou.goalsservice.dto.GoalRequest;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,4 +26,14 @@ public class Goal {
     private String title;
     private String text;
     private String color;
+
+    public static Goal factoryGoalRequest(GoalRequest goalRequest) {
+        Goal goal = new Goal();
+
+        goal.setColor(goalRequest.getColor());
+        goal.setText(goalRequest.getText());
+        goal.setTitle(goalRequest.getTitle());
+
+        return goal;
+    }
 }
