@@ -1,6 +1,8 @@
 package com.estudou.scheduleservice.service;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -38,6 +40,29 @@ public class ScheduleServiceTests {
         Assertions.assertEquals(schedule.getStudentId(), "1");
         Assertions.assertEquals(schedule.getStartDate(), "03-03-2023");
         Assertions.assertInstanceOf(Schedule.class, schedule);
+    }
+
+    @Test
+    void shouldUpdate() {
+        ScheduleRequest scheduleRequest = generateScheduleRequest();
+        String scheduleId = "1";
+
+        Schedule updatedSchedule = generateSchedule();
+        updatedSchedule.setId(scheduleId);
+        updatedSchedule.setGoalId("1");
+        updatedSchedule.setStudentId("2");
+
+        when(scheduleRepository.save(any())).thenReturn(updatedSchedule);
+        when(scheduleRepository.findById(scheduleId)).thenReturn(generateOptionalSchedule());
+
+        Schedule scheduleResponse = scheduleService.update(scheduleId, scheduleRequest);
+
+        Assertions.assertEquals(scheduleResponse.getGoalId(), "1");
+        Assertions.assertEquals(scheduleResponse.getStudentId(), "2");
+        Assertions.assertEquals(scheduleResponse.getId(), "1");
+
+        Assertions.assertInstanceOf(Schedule.class, scheduleResponse);
+        verify(scheduleRepository, times(1)).save(any());
     }
 
     @Test

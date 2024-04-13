@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -42,18 +43,32 @@ public class ScheduleControllerTests {
 
         when(scheduleService.create(any())).thenReturn(generateSchedule());
 
-        mockMvc.perform(post("/api/schedule")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(scheduleRequestToString))
-            .andExpect(status().isCreated());
+        mockMvc.perform(
+            post("/api/schedule")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(scheduleRequestToString)
+        ).andExpect(status().isCreated());
     }
 
     @Test
     void shouldFailCreateWithoutBody() throws Exception {
-        mockMvc.perform(post("/api/schedule")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content("{}"))
-            .andExpect(status().isBadRequest());
+        mockMvc.perform(
+            post("/api/schedule")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{}")
+        ).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldUpdate() throws Exception {
+        ScheduleRequest scheduleRequest = generateScheduleRequest();
+        String scheduleRequestString = objectMapper.writeValueAsString(scheduleRequest);
+
+        mockMvc.perform(
+            patch("/api/schedule/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(scheduleRequestString)
+        ).andExpect(status().isOk());
     }
 
     @Test
@@ -61,8 +76,9 @@ public class ScheduleControllerTests {
         Schedule schedule = generateSchedule();
         when(scheduleService.findById(any())).thenReturn(schedule);
 
-        mockMvc.perform(get("/api/schedule/1", 1L))
-            .andExpect(status().isOk());
+        mockMvc.perform(
+            get("/api/schedule/1", 1L)
+        ).andExpect(status().isOk());
     }
 
     @Test
@@ -70,16 +86,18 @@ public class ScheduleControllerTests {
         List<Schedule> schedules = Arrays.asList(generateSchedule(), generateSchedule());
         when(scheduleService.findAll()).thenReturn(schedules);
 
-        mockMvc.perform(get("/api/schedule"))
-            .andExpect(status().isOk());
+        mockMvc.perform(
+            get("/api/schedule")
+        ).andExpect(status().isOk());
     }
 
     @Test
     void shouldProperlyDelete() throws Exception {
         when(scheduleService.delete(any())).thenReturn(true);
 
-        mockMvc.perform(delete("/api/schedule/1", 1L))
-            .andExpect(status().isOk());
+        mockMvc.perform(
+            delete("/api/schedule/1", 1L)
+        ).andExpect(status().isOk());
     }
 
     ScheduleRequest generateScheduleRequest() {
@@ -103,5 +121,4 @@ public class ScheduleControllerTests {
     Optional<Schedule> generateOptionalSchedule() {
         return Optional.ofNullable(generateSchedule());
     }
-
 }

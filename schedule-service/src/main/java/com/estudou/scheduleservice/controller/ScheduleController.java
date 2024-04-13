@@ -6,6 +6,7 @@ import java.util.concurrent.CompletableFuture;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,6 +44,20 @@ public class ScheduleController {
         HttpStatus.CREATED,
         "Schedule created successfully.",
         schedule
+    );
+
+    return responseAdvice;
+  }
+
+  @PatchMapping("/{scheduleId}")
+  @ResponseStatus(HttpStatus.OK)
+  public ResponseAdvice<Schedule> update(@PathVariable(value="scheduleId") String scheduleId, @Valid @RequestBody ScheduleRequest scheduleRequest) {
+    Schedule schedule = scheduleService.update(scheduleId, scheduleRequest);
+
+    ResponseAdvice<Schedule> responseAdvice = new ResponseAdvice<Schedule>(
+      HttpStatus.OK,
+      "Schedule updated successfully.",
+      schedule
     );
 
     return responseAdvice;

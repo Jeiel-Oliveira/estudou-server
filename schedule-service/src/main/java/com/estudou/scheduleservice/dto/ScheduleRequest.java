@@ -19,4 +19,6 @@ public class ScheduleRequest {
 
   @NotNull(message = "endDate is required")
   private String endDate;
+
+  private String goalId;
 }

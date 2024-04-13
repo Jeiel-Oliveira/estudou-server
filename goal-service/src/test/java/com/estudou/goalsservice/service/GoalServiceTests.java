@@ -1,6 +1,8 @@
 package com.estudou.goalsservice.service;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -38,6 +40,8 @@ public class GoalServiceTests {
         Assertions.assertEquals(goal.getText(), "Estudar");
         Assertions.assertEquals(goal.getTitle(), "Estudar");
         Assertions.assertInstanceOf(Goal.class, goal);
+
+        verify(goalRepository, times(1)).save(any());
     }
 
     @Test
@@ -58,6 +62,9 @@ public class GoalServiceTests {
         Assertions.assertEquals(goalResponse.getTitle(), "Estudando");
         Assertions.assertEquals(goalResponse.getId(), 1L);
         Assertions.assertInstanceOf(Goal.class, goalResponse);
+
+        verify(goalRepository, times(1)).save(any());
+        verify(goalRepository, times(1)).findById(any());
     }
 
     @Test
@@ -70,6 +77,8 @@ public class GoalServiceTests {
         Assertions.assertEquals(goals.size(), goalsRes.size());
         Assertions.assertTrue(goalsRes.containsAll(goals));
         Assertions.assertInstanceOf(Goal.class, goalsRes.get(1));
+
+        verify(goalRepository, times(1)).findAll();
     }
 
     @Test
@@ -81,6 +90,8 @@ public class GoalServiceTests {
 
         Assertions.assertInstanceOf(Goal.class, goal);
         Assertions.assertEquals(goal.getId(), 1);
+
+        verify(goalRepository, times(1)).findById(any());
     }
 
     @Test
@@ -92,6 +103,8 @@ public class GoalServiceTests {
         Assertions.assertThrows(GoalNotFoundException.class, () ->
             goalService.delete(goalId)
         );
+
+        verify(goalRepository, times(1)).findById(any());
     }
 
 	private GoalRequest generateGoalRequest() {

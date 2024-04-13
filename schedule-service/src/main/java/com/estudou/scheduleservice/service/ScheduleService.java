@@ -28,16 +28,21 @@ public class ScheduleService {
   private final KafkaTemplate<String, ScheduleVinculateGoalEvent> kafkaTemplate;
 
   public Schedule create(ScheduleRequest scheduleRequest) {
-    Schedule schedule = Schedule.builder()
-      .studentId(scheduleRequest.getStudentId())
-      .startDate(scheduleRequest.getStartDate())
-      .endDate(scheduleRequest.getEndDate())
-      .build();
+    Schedule schedule = Schedule.factoryScheduleRequest(scheduleRequest);
+    Schedule scheduleResponse = scheduleRepository.save(schedule);
 
-    Schedule newSchedule = scheduleRepository.save(schedule);
     log.info("Schedule {} is saved", schedule.getId());
+    return scheduleResponse;
+  }
 
-    return newSchedule;
+  public Schedule update(String scheduleId, ScheduleRequest scheduleRequest) {
+    findById(scheduleId);
+
+    Schedule schedule = Schedule.factoryScheduleRequest(scheduleRequest);
+    schedule.setId(scheduleId);
+
+    Schedule scheduleResponse = scheduleRepository.save(schedule);
+    return scheduleResponse;
   }
 
   public Schedule findById(String scheduleId) {
