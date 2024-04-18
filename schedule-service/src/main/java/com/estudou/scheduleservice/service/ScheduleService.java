@@ -18,6 +18,10 @@ import com.estudou.scheduleservice.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Service class for managing schedules. This class provides methods to perform
+ * CRUD operations on schedules and associate goals with schedules.
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -27,6 +31,13 @@ public class ScheduleService {
   private final WebClient.Builder webClientBuilder;
   private final KafkaTemplate<String, ScheduleVinculateGoalEvent> kafkaTemplate;
 
+  /**
+   * Creates a new schedule.
+   *
+   * @param scheduleRequest The request containing the data for creating the
+   *                        schedule.
+   * @return The created schedule.
+   */
   public Schedule create(ScheduleRequest scheduleRequest) {
     Schedule schedule = Schedule.factoryScheduleRequest(scheduleRequest);
     Schedule scheduleResponse = scheduleRepository.save(schedule);
@@ -35,6 +46,14 @@ public class ScheduleService {
     return scheduleResponse;
   }
 
+  /**
+   * Updates an existing schedule.
+   *
+   * @param scheduleId      The ID of the schedule to update.
+   * @param scheduleRequest The request containing the updated data for the
+   *                        schedule.
+   * @return The updated schedule.
+   */
   public Schedule update(String scheduleId, ScheduleRequest scheduleRequest) {
     findById(scheduleId);
 
@@ -45,13 +64,27 @@ public class ScheduleService {
     return scheduleResponse;
   }
 
+  /**
+   * Finds a schedule by ID.
+   *
+   * @param scheduleId The ID of the schedule to find.
+   * @return The found schedule.
+   * @throws ScheduleNotFoundException If the schedule with the given ID is not
+   *                                   found.
+   */
   public Schedule findById(String scheduleId) {
     Schedule schedule = scheduleRepository.findById(scheduleId)
-      .orElseThrow(() -> new ScheduleNotFoundException(scheduleId));
+        .orElseThrow(() -> new ScheduleNotFoundException(scheduleId));
 
     return schedule;
   }
 
+  /**
+   * Deletes a schedule by ID.
+   *
+   * @param scheduleId The ID of the schedule to delete.
+   * @return True if the schedule was successfully deleted, false otherwise.
+   */
   public boolean delete(String scheduleId) {
     findById(scheduleId);
     scheduleRepository.deleteById(scheduleId);
@@ -63,19 +96,27 @@ public class ScheduleService {
     return schedules.stream().map(this::mapToScheduleResponse).toList();
   }
 
-  public Schedule vinculateGoal(String scheduleId, ScheduleVinculateGoalRequest scheduleVinculateGoalRequest) {
+  /**
+   * Associates a goal with a schedule.
+   *
+   * @param scheduleId                   The ID of the schedule to associate the
+   *                                     goal with.
+   * @param scheduleVinculateGoalRequest The request containing the ID of the goal
+   *                                     to associate.
+   * @return The updated schedule with the associated goal.
+   * @throws GoalNotFoundException If the goal with the given ID is not found.
+   */
+  public Schedule vinculateGoal(String scheduleId,
+      ScheduleVinculateGoalRequest scheduleVinculateGoalRequest) {
     String goalId = scheduleVinculateGoalRequest.getGoalId();
 
     Schedule schedule = findById(scheduleId);
 
-    GoalRequest goal = webClientBuilder.build()
-      .get()
-      .uri("http://goal-service/api/goal/" + goalId)
-      .retrieve()
-      .bodyToMono(GoalRequest.class)
-      // [TODO] Is necessary to map another possibles errors in addition to GoalNotFoundException
-      .onErrorMap(error -> new GoalNotFoundException(goalId))
-      .block();
+    GoalRequest goal = webClientBuilder.build().get().uri("http://goal-service/api/goal/" + goalId)
+        .retrieve().bodyToMono(GoalRequest.class)
+        // [TODO] Is necessary to map another possibles errors in addition to
+        // GoalNotFoundException
+        .onErrorMap(error -> new GoalNotFoundException(goalId)).block();
 
     log.info("goal finded", goal);
 
@@ -86,13 +127,15 @@ public class ScheduleService {
     return schedule;
   }
 
+  /**
+   * Maps a schedule entity to a response DTO.
+   *
+   * @param schedule The schedule entity to map.
+   * @return The mapped schedule response DTO.
+   */
   private Schedule mapToScheduleResponse(Schedule schedule) {
-    return Schedule.builder()
-      .id(schedule.getId())
-      .studentId(schedule.getStudentId())
-      .startDate(schedule.getStartDate())
-      .endDate(schedule.getEndDate())
-      .goalId(schedule.getGoalId())
-      .build();
+    return Schedule.builder().id(schedule.getId()).studentId(schedule.getStudentId())
+        .startDate(schedule.getStartDate()).endDate(schedule.getEndDate())
+        .goalId(schedule.getGoalId()).build();
   }
 }

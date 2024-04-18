@@ -8,5 +8,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ScheduleVinculateGoalEvent {
-    private String goalId;
+  private String goalId;
 }

@@ -1,15 +1,19 @@
 package com.estudou.scheduleservice.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.estudou.scheduleservice.dto.ScheduleRequest;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * Represents a schedule entity. This class encapsulates information about a
+ * schedule.
+ */
 @Document(value = "schedules")
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,6 +28,13 @@ public class Schedule {
   private String endDate;
   private String goalId;
 
+  /**
+   * Factory method to create a Schedule object from a ScheduleRequest object.
+   *
+   * @param scheduleRequest The ScheduleRequest object containing the data to
+   *                        create the Schedule.
+   * @return The Schedule object created from the ScheduleRequest.
+   */
   public static Schedule factoryScheduleRequest(ScheduleRequest scheduleRequest) {
     Schedule schedule = new Schedule();
 

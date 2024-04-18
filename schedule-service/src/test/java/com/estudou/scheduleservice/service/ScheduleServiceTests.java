@@ -21,101 +21,100 @@ import com.estudou.scheduleservice.exception.ScheduleNotFoundException;
 import com.estudou.scheduleservice.model.Schedule;
 import com.estudou.scheduleservice.repository.ScheduleRepository;
 
+/**
+ * Tests for ScheduleService.
+ */
 @ExtendWith(MockitoExtension.class)
 public class ScheduleServiceTests {
 
-    @Mock
-    private ScheduleRepository scheduleRepository;
+  @Mock
+  private ScheduleRepository scheduleRepository;
 
-    @InjectMocks
-    private ScheduleService scheduleService;
+  @InjectMocks
+  private ScheduleService scheduleService;
 
-    @Test
-    void shouldCreate() {
-        ScheduleRequest scheduleRequest = generateScheduleRequest();
-        when(scheduleRepository.save(any())).thenReturn(generateSchedule());
+  @Test
+  void shouldCreate() {
+    ScheduleRequest scheduleRequest = generateScheduleRequest();
+    when(scheduleRepository.save(any())).thenReturn(generateSchedule());
 
-        Schedule schedule = scheduleService.create(scheduleRequest);
+    Schedule schedule = scheduleService.create(scheduleRequest);
 
-        Assertions.assertEquals(schedule.getStudentId(), "1");
-        Assertions.assertEquals(schedule.getStartDate(), "03-03-2023");
-        Assertions.assertInstanceOf(Schedule.class, schedule);
-    }
+    Assertions.assertEquals(schedule.getStudentId(), "1");
+    Assertions.assertEquals(schedule.getStartDate(), "03-03-2023");
+    Assertions.assertInstanceOf(Schedule.class, schedule);
+  }
 
-    @Test
-    void shouldUpdate() {
-        ScheduleRequest scheduleRequest = generateScheduleRequest();
-        String scheduleId = "1";
+  @Test
+  void shouldUpdate() {
+    String scheduleId = "1";
 
-        Schedule updatedSchedule = generateSchedule();
-        updatedSchedule.setId(scheduleId);
-        updatedSchedule.setGoalId("1");
-        updatedSchedule.setStudentId("2");
+    Schedule updatedSchedule = generateSchedule();
+    updatedSchedule.setId(scheduleId);
+    updatedSchedule.setGoalId("1");
+    updatedSchedule.setStudentId("2");
 
-        when(scheduleRepository.save(any())).thenReturn(updatedSchedule);
-        when(scheduleRepository.findById(scheduleId)).thenReturn(generateOptionalSchedule());
+    when(scheduleRepository.save(any())).thenReturn(updatedSchedule);
+    when(scheduleRepository.findById(scheduleId)).thenReturn(generateOptionalSchedule());
 
-        Schedule scheduleResponse = scheduleService.update(scheduleId, scheduleRequest);
+    ScheduleRequest scheduleRequest = generateScheduleRequest();
+    Schedule scheduleResponse = scheduleService.update(scheduleId, scheduleRequest);
 
-        Assertions.assertEquals(scheduleResponse.getGoalId(), "1");
-        Assertions.assertEquals(scheduleResponse.getStudentId(), "2");
-        Assertions.assertEquals(scheduleResponse.getId(), "1");
+    Assertions.assertEquals(scheduleResponse.getGoalId(), "1");
+    Assertions.assertEquals(scheduleResponse.getStudentId(), "2");
+    Assertions.assertEquals(scheduleResponse.getId(), "1");
 
-        Assertions.assertInstanceOf(Schedule.class, scheduleResponse);
-        verify(scheduleRepository, times(1)).save(any());
-    }
+    Assertions.assertInstanceOf(Schedule.class, scheduleResponse);
+    verify(scheduleRepository, times(1)).save(any());
+  }
 
-    @Test
-    void shouldFindAll() {
-        List<Schedule> schedules = Arrays.asList(generateSchedule(), generateSchedule());
-        when(scheduleRepository.findAll()).thenReturn(schedules);
+  @Test
+  void shouldFindAll() {
+    List<Schedule> schedules = Arrays.asList(generateSchedule(), generateSchedule());
+    when(scheduleRepository.findAll()).thenReturn(schedules);
 
-        List<Schedule> schedulesRes = scheduleService.findAll();
+    List<Schedule> schedulesRes = scheduleService.findAll();
 
-        Assertions.assertEquals(schedules.size(), schedulesRes.size());
-        Assertions.assertInstanceOf(Schedule.class, schedulesRes.get(0));
-    }
+    Assertions.assertEquals(schedules.size(), schedulesRes.size());
+    Assertions.assertInstanceOf(Schedule.class, schedulesRes.get(0));
+  }
 
-    @Test
-    void shouldFindById() {
-        String scheduleId = "1";
+  @Test
+  void shouldFindById() {
+    String scheduleId = "1";
 
-        when(scheduleRepository.findById("1")).thenReturn(generateOptionalSchedule());
-        Schedule schedule = scheduleService.findById(scheduleId);
+    when(scheduleRepository.findById("1")).thenReturn(generateOptionalSchedule());
+    Schedule schedule = scheduleService.findById(scheduleId);
 
-        Assertions.assertInstanceOf(Schedule.class, schedule);
-        Assertions.assertEquals(schedule.getStudentId(), "1");
-    }
+    Assertions.assertInstanceOf(Schedule.class, schedule);
+    Assertions.assertEquals(schedule.getStudentId(), "1");
+  }
 
-    @Test
-    void shouldThrowExceptionWhenDontFind() {
-        String scheduleId = "1";
-        when(scheduleRepository.findById(scheduleId)).thenReturn(Optional.empty());
+  @Test
+  void shouldThrowExceptionWhenDontFind() {
+    String scheduleId = "1";
+    when(scheduleRepository.findById(scheduleId)).thenReturn(Optional.empty());
 
-        Assertions.assertThrows(ScheduleNotFoundException.class, () ->
-            scheduleService.findById(scheduleId)
-        );
-    }
+    Assertions.assertThrows(ScheduleNotFoundException.class,
+        () -> scheduleService.findById(scheduleId));
+  }
 
-    ScheduleRequest generateScheduleRequest() {
-        return ScheduleRequest.builder()
-            .studentId("1")
-            .startDate("03-03-2023")
-            .endDate("03-03-2023")
-            .build();
-    }
+  ScheduleRequest generateScheduleRequest() {
+    return ScheduleRequest.builder().studentId("1").startDate("03-03-2023").endDate("03-03-2023")
+        .build();
+  }
 
-    Schedule generateSchedule() {
-        Schedule schedule = new Schedule();
+  Schedule generateSchedule() {
+    Schedule schedule = new Schedule();
 
-        schedule.setStudentId("1");
-        schedule.setStartDate("03-03-2023");
-        schedule.setEndDate("03-03-2023");
+    schedule.setStudentId("1");
+    schedule.setStartDate("03-03-2023");
+    schedule.setEndDate("03-03-2023");
 
-        return schedule;
-    }
+    return schedule;
+  }
 
-    Optional<Schedule> generateOptionalSchedule() {
-        return Optional.ofNullable(generateSchedule());
-    }
+  Optional<Schedule> generateOptionalSchedule() {
+    return Optional.ofNullable(generateSchedule());
+  }
 }

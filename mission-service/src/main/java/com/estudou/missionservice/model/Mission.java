@@ -12,6 +12,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Entity class representing a mission. This class maps to the "t_mission" table
+ * in the database and encapsulates information about a mission, including its
+ * ID, type, name, and points.
+ */
 @Entity
 @Table(name = "t_mission")
 @Getter
@@ -19,19 +24,22 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Mission {
-    public enum Type {
-        POMODORO,
-        ENTER,
-        ANNOTATION
-    }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  /**
+   * Enumeration representing the type of mission. Possible values are POMODORO,
+   * ENTER, and ANNOTATION.
+   */
+  public enum Type {
+    POMODORO, ENTER, ANNOTATION
+  }
 
-    @Enumerated(EnumType.STRING)
-    private Type type;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    private String name;
-    private Integer points;
+  @Enumerated(EnumType.STRING)
+  private Type type;
+
+  private String name;
+  private Integer points;
 }

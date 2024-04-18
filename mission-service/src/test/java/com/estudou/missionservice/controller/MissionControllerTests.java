@@ -17,41 +17,42 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.estudou.missionservice.model.Mission;
 import com.estudou.missionservice.service.MissionService;
 
+/**
+ * Tests for MissionController.
+ */
 @WebMvcTest(MissionController.class)
 public class MissionControllerTests {
 
-    @MockBean
-    private MissionService missionService;
+  @MockBean
+  private MissionService missionService;
 
-    @Autowired
-    private MockMvc mockMvc;
+  @Autowired
+  private MockMvc mockMvc;
 
-    @Test
-    void shouldFindById() throws Exception {
-        Mission mission = generateMission();
-        when(missionService.findById(any())).thenReturn(mission);
+  @Test
+  void shouldFindById() throws Exception {
+    Mission mission = generateMission();
+    when(missionService.findById(any())).thenReturn(mission);
 
-        mockMvc.perform(get("/api/mission/1", 1L))
-            .andExpect(status().isOk());
-    }
+    mockMvc.perform(get("/api/mission/1", 1L)).andExpect(status().isOk());
+  }
 
-    @Test
-    void shouldFindAll() throws Exception {
-        List<Mission> missions = Arrays.asList(generateMission(), generateMission());
-        when(missionService.findAll()).thenReturn(missions);
+  @Test
+  void shouldFindAll() throws Exception {
+    List<Mission> missions = Arrays.asList(generateMission(), generateMission());
+    when(missionService.findAll()).thenReturn(missions);
 
-        mockMvc.perform(get("/api/mission"))
-            .andExpect(status().isOk());
-    }
+    mockMvc.perform(get("/api/mission")).andExpect(status().isOk());
+  }
 
-    private Mission generateMission() {
-        Mission mission = new Mission();
+  private Mission generateMission() {
+    Mission mission = new Mission();
 
-        mission.setId(1L);
-        mission.setName("Pomodoro");
-        mission.setPoints(30);
-        mission.setType(Mission.Type.POMODORO);
+    mission.setId(1L);
+    mission.setName("Pomodoro");
+    mission.setPoints(30);
+    mission.setType(Mission.Type.POMODORO);
 
-        return mission;
-    }
+    return mission;
+  }
 }

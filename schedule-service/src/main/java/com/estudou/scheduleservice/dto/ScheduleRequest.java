@@ -7,6 +7,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Represents a request to create or update a schedule. This class encapsulates
+ * the data required to create or update a schedule.
+ */
 @Data
 @Builder
 @AllArgsConstructor
