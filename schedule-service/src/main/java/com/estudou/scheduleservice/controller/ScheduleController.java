@@ -18,6 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.estudou.scheduleservice.advice.ResponseAdvice;
 import com.estudou.scheduleservice.dto.ScheduleRequest;
 import com.estudou.scheduleservice.dto.ScheduleVinculateGoalRequest;
+import com.estudou.scheduleservice.exception.GenericResponseException;
 import com.estudou.scheduleservice.exception.GoalServiceUnavailableException;
 import com.estudou.scheduleservice.model.Schedule;
 import com.estudou.scheduleservice.service.ScheduleService;
@@ -130,7 +131,8 @@ public class ScheduleController {
   @Retry(name = "goal")
   public CompletableFuture<ResponseAdvice<Schedule>> vinculateGaol(
       @PathVariable(value = "scheduleId") String scheduleId,
-      @RequestBody ScheduleVinculateGoalRequest scheduleVinculateGoalRequest) {
+      @RequestBody ScheduleVinculateGoalRequest scheduleVinculateGoalRequest)
+      throws ResponseStatusException {
     return CompletableFuture.supplyAsync(() -> {
       Schedule schedule = scheduleService.vinculateGoal(scheduleId, scheduleVinculateGoalRequest);
 
@@ -177,7 +179,7 @@ public class ScheduleController {
   public CompletableFuture<ResponseAdvice<Schedule>> fallbackGoal(String scheduleId,
       ScheduleVinculateGoalRequest scheduleVinculateGoalRequest,
       ResponseStatusException responseStatusException) throws ResponseStatusException {
-    System.out.println(responseStatusException);
-    throw new GoalServiceUnavailableException(responseStatusException.getReason());
+    throw new GenericResponseException(responseStatusException.getStatusCode(),
+        responseStatusException.getReason());
   }
 }

@@ -1,19 +1,25 @@
 package com.estudou.scheduleservice.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import com.estudou.scheduleservice.advice.JsonReponseAdvice;
 import com.estudou.scheduleservice.dto.GoalRequest;
 import com.estudou.scheduleservice.dto.ScheduleRequest;
 import com.estudou.scheduleservice.dto.ScheduleVinculateGoalRequest;
 import com.estudou.scheduleservice.event.ScheduleVinculateGoalEvent;
+import com.estudou.scheduleservice.exception.GenericResponseException;
 import com.estudou.scheduleservice.exception.GoalNotFoundException;
 import com.estudou.scheduleservice.exception.ScheduleNotFoundException;
 import com.estudou.scheduleservice.model.Schedule;
 import com.estudou.scheduleservice.repository.ScheduleRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -112,19 +118,41 @@ public class ScheduleService {
 
     Schedule schedule = findById(scheduleId);
 
-    GoalRequest goal = webClientBuilder.build().get().uri("http://goal-service/api/goal/" + goalId)
+    webClientBuilder.build().get().uri("http://goal-service/api/goal/" + goalId)
         .retrieve().bodyToMono(GoalRequest.class)
-        // [TODO] Is necessary to map another possibles errors in addition to
-        // GoalNotFoundException
-        .onErrorMap(error -> new GoalNotFoundException(goalId)).block();
-
-    log.info("goal finded", goal);
+        .onErrorMap(WebClientResponseException.class, this::handleWebClientResponseException)
+        .block();
 
     schedule.setGoalId(goalId);
     kafkaTemplate.send("notificationTopic", new ScheduleVinculateGoalEvent(goalId));
     scheduleRepository.save(schedule);
 
     return schedule;
+  }
+
+  /**
+   * Handles WebClientResponseException by parsing the error response body and
+   * converting it into a Throwable. This method is used in the onErrorMap
+   * function of a WebClient Mono chain to handle errors from external services.
+   *
+   * @param error The WebClientResponseException thrown by the WebClient request.
+   * @return A Throwable representing the error, either a GenericResponseException
+   *         containing the parsed error message from the response body, or a
+   *         GenericResponseException with the original error message if parsing
+   *         fails.
+   */
+  @SuppressWarnings("unchecked")
+  private Throwable handleWebClientResponseException(WebClientResponseException error) {
+    try {
+      ObjectMapper objectMapper = new ObjectMapper();
+      JsonReponseAdvice<Map<String, Object>> bodyString = objectMapper
+          .readValue(error.getResponseBodyAsString(), JsonReponseAdvice.class);
+
+      return new GenericResponseException(error.getStatusCode(), bodyString.getMessage());
+    } catch (JsonProcessingException e) {
+      log.error("Error parsing JSON response from goal service", e);
+      return new GenericResponseException(error.getStatusCode(), error.getMessage());
+    }
   }
 
   /**
@@ -138,4 +166,5 @@ public class ScheduleService {
         .startDate(schedule.getStartDate()).endDate(schedule.getEndDate())
         .goalId(schedule.getGoalId()).build();
   }
+
 }
