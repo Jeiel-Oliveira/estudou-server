@@ -30,11 +30,13 @@ public class SecurityConfig {
   public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity serverHttpSecurity)
       throws Exception {
 
-    serverHttpSecurity.csrf(ServerHttpSecurity.CsrfSpec::disable)
-        .oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer.jwt(jwt -> {
-          jwt.jwtAuthenticationConverter(jwtAuthenticationConverter());
-        })).authorizeExchange(authorize -> authorize.pathMatchers("/eureka/**").permitAll()
-            .anyExchange().authenticated());
+    serverHttpSecurity.csrf(ServerHttpSecurity.CsrfSpec::disable);
+
+    serverHttpSecurity.oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer
+        .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
+
+    serverHttpSecurity.authorizeExchange(authorize -> authorize.pathMatchers("/eureka/**")
+        .permitAll().anyExchange().authenticated());
 
     return serverHttpSecurity.build();
   }

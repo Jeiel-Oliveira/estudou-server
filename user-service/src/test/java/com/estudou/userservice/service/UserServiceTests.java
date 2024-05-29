@@ -22,6 +22,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.estudou.userservice.config.KeycloakSecurityConfig;
 import com.estudou.userservice.model.User;
 
+/**
+ * Tests for UserService.
+ */
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTests {
 
