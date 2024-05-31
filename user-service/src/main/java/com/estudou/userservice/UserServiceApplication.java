@@ -4,6 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
+/**
+ * Main application class for the User Service. This class initializes and runs
+ * the User Service application.
+ */
 @EnableDiscoveryClient
 @SpringBootApplication
 public class UserServiceApplication {

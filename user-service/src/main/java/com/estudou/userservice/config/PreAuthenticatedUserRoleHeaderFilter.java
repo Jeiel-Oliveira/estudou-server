@@ -20,8 +20,40 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 
+/**
+ * Filter that extracts JWT tokens from the HTTP request header, validates them,
+ * and sets the authentication in the security context.
+ *
+ * <p>
+ * This filter retrieves the JWT token from the "Authorization" header, parses
+ * the token to extract user roles and username, and then sets the
+ * authentication in the security context.
+ * </p>
+ */
 public class PreAuthenticatedUserRoleHeaderFilter extends GenericFilterBean {
 
+  /**
+   * Filters incoming HTTP requests to extract and validate JWT tokens.
+   *
+   * <p>
+   * This method retrieves the token from the request, parses it to extract
+   * claims, sets the authentication in the security context, and proceeds with
+   * the filter chain. If an exception occurs, the filter chain continues without
+   * setting the authentication.
+   * </p>
+   *
+   * <p>
+   * Extract the JWT roles of the token comming in the header from the API
+   * gateway. Is necessary to configure the mapper in the keycloak to put the
+   * roles in the token. More details in the KEYCLOAK.md documentation
+   * </p>
+   *
+   * @param servletRequest  the request to process
+   * @param servletResponse the response associated with the request
+   * @param chain           the filter chain
+   * @throws IOException      if an I/O error occurs during processing
+   * @throws ServletException if a servlet error occurs during processing
+   */
   public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,
       FilterChain chain) throws IOException, ServletException {
 

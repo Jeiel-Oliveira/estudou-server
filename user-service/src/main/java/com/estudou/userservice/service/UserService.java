@@ -14,6 +14,10 @@ import com.estudou.userservice.model.User;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Service class for managing users. This service provides methods to interact
+ * with Keycloak and perform operations related to users.
+ */
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -22,13 +26,20 @@ public class UserService {
   private KeycloakSecurityConfig keycloakConfig;
 
   @Value("${keycloak-realm}")
-  private String realm;
+  private String realmName;
 
+  /**
+   * Retrieves a list of all users. This method is secured and can only be
+   * accessed by users with the 'admin' authority. It connects to Keycloak,
+   * retrieves user representations, and maps them to {@link User} objects.
+   *
+   * @return a list of {@link User} objects representing all users
+   */
   @PreAuthorize("hasAuthority('admin')")
   public List<User> findAll() {
     Keycloak keycloak = keycloakConfig.getKeycloakInstance();
 
-    List<UserRepresentation> userRepresentations = keycloak.realm(realm).users().list();
+    List<UserRepresentation> userRepresentations = keycloak.realm(realmName).users().list();
 
     return userRepresentations.stream().map(this::mapUser).toList();
   }

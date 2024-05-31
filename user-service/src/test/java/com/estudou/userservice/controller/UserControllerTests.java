@@ -41,7 +41,7 @@ class UserControllerTests {
   @Test
   void unauthorizedErrorWhenFindAll() throws Exception {
     mockMvc.perform(get("/api/user").header("Authorization", "Bearer tokenizou"))
-      .andExpect(status().isUnauthorized());
+        .andExpect(status().isUnauthorized());
   }
 
   private User generateUser() {
