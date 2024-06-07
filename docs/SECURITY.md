@@ -43,3 +43,8 @@ https://docs.spring.io/spring-security/site/docs/3.0.x/reference/el-access.html
 YOUTUBE PLAYLIST
 
 https://youtube.com/playlist?list=PLA7e3zmT6XQUAmBuCBVeMerJG62KUvSzT
+
+Access Denied customizable
+
+The Access Denied error should not be customizable, the argument of the manteiner of the spring securityin the link below
+https://stackoverflow.com/questions/52495344/how-to-throw-a-custom-accessdeniedexception-in-spring-security

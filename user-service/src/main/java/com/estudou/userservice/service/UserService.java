@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import com.estudou.userservice.config.Authority;
 import com.estudou.userservice.config.KeycloakSecurityConfig;
 import com.estudou.userservice.model.User;
 
@@ -35,7 +36,7 @@ public class UserService {
    *
    * @return a list of {@link User} objects representing all users
    */
-  @PreAuthorize("hasAuthority('admin')")
+  @PreAuthorize(Authority.ADMIN)
   public List<User> findAll() {
     Keycloak keycloak = keycloakConfig.getKeycloakInstance();
 
