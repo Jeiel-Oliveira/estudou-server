@@ -40,6 +40,8 @@ public class SecurityConfig {
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     PreAuthenticatedUserRoleHeaderFilter preAuthenticatedUserFilter = new PreAuthenticatedUserRoleHeaderFilter();
 
+    http.csrf(csrf -> csrf.disable());
+
     return http.addFilterBefore(preAuthenticatedUserFilter, BasicAuthenticationFilter.class)
         .authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll()).build();
   }

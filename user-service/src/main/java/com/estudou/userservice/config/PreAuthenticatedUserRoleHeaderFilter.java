@@ -19,6 +19,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Filter that extracts JWT tokens from the HTTP request header, validates them,
@@ -30,6 +31,7 @@ import jakarta.servlet.http.HttpServletRequest;
  * authentication in the security context.
  * </p>
  */
+@Slf4j
 public class PreAuthenticatedUserRoleHeaderFilter extends GenericFilterBean {
 
   /**
@@ -76,7 +78,7 @@ public class PreAuthenticatedUserRoleHeaderFilter extends GenericFilterBean {
       SecurityContextHolder.getContext().setAuthentication(authentication);
       chain.doFilter(servletRequest, servletResponse);
     } catch (Exception e) {
-      System.out.println(e.toString());
+      log.info(e.toString());
       chain.doFilter(servletRequest, servletResponse);
     }
   }

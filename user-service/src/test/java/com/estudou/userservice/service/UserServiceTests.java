@@ -64,6 +64,17 @@ public class UserServiceTests {
     Assertions.assertInstanceOf(User.class, usersResponse.get(0));
   }
 
+  @Test
+  void shouldCreate() {
+    User userResponse = userService.create(generateUser());
+
+    Assertions.assertEquals(userResponse.getEmail(), "test@email.com");
+    Assertions.assertEquals(userResponse.getFirstName(), "Test");
+    Assertions.assertEquals(userResponse.getLastName(), "Testing");
+
+    Assertions.assertInstanceOf(User.class, userResponse);
+  }
+
   private UserRepresentation generateUserRepresentation() {
     UserRepresentation userRepresentation = new UserRepresentation();
 
@@ -75,4 +86,14 @@ public class UserServiceTests {
     return userRepresentation;
   }
 
+  private User generateUser() {
+    User user = new User();
+
+    user.setEmail("test@email.com");
+    user.setFirstName("Test");
+    user.setLastName("Testing");
+    user.setUsername("Test");
+
+    return user;
+  }
 }

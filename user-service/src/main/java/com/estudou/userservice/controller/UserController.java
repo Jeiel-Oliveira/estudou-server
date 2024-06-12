@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,6 +15,7 @@ import com.estudou.userservice.exception.ResponseAdvice;
 import com.estudou.userservice.model.User;
 import com.estudou.userservice.service.UserService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -49,4 +52,14 @@ public class UserController {
     return responseAdvice;
   }
 
+  @PostMapping
+  @ResponseStatus(HttpStatus.CREATED)
+  public ResponseAdvice<User> create(@Valid @RequestBody User userRequest) {
+    User user = userService.create(userRequest);
+
+    ResponseAdvice<User> responseAdvice = new ResponseAdvice<User>(HttpStatus.CREATED,
+        "Users found successfully.", user);
+
+    return responseAdvice;
+  }
 }

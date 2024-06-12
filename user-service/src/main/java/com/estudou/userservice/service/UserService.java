@@ -1,8 +1,10 @@
 package com.estudou.userservice.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.keycloak.admin.client.Keycloak;
+import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,6 +47,16 @@ public class UserService {
     return userRepresentations.stream().map(this::mapUser).toList();
   }
 
+  @PreAuthorize(Authority.ADMIN)
+  public User create(User user) {
+    UserRepresentation userRepresentation = mapUserRepresentation(user);
+
+    Keycloak keycloak = keycloakConfig.getKeycloakInstance();
+    keycloak.realm(realmName).users().create(userRepresentation);
+
+    return mapUser(userRepresentation);
+  }
+
   private User mapUser(UserRepresentation userRepresentation) {
     User user = new User();
 
@@ -54,6 +66,27 @@ public class UserService {
     user.setUsername(userRepresentation.getUsername());
 
     return user;
+  }
+
+  private UserRepresentation mapUserRepresentation(User user) {
+    UserRepresentation userRepresentation = new UserRepresentation();
+
+    userRepresentation.setUsername(user.getUsername());
+    userRepresentation.setFirstName(user.getFirstName());
+    userRepresentation.setLastName(user.getLastName());
+    userRepresentation.setEmail(user.getEmail());
+    userRepresentation.setEnabled(true);
+    userRepresentation.setEmailVerified(true);
+
+    List<CredentialRepresentation> credentials = new ArrayList<>();
+    CredentialRepresentation credential = new CredentialRepresentation();
+
+    credential.setTemporary(false);
+    credential.setValue(user.getPassword());
+    credentials.add(credential);
+    userRepresentation.setCredentials(credentials);
+
+    return userRepresentation;
   }
 
 }
