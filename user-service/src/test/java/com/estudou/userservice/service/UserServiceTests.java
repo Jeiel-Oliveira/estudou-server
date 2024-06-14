@@ -20,6 +20,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.estudou.userservice.config.KeycloakSecurityConfig;
+import com.estudou.userservice.dto.UserRequest;
 import com.estudou.userservice.model.User;
 
 /**
@@ -66,7 +67,7 @@ public class UserServiceTests {
 
   @Test
   void shouldCreate() {
-    User userResponse = userService.create(generateUser());
+    User userResponse = userService.create(generateUserRequest());
 
     Assertions.assertEquals(userResponse.getEmail(), "test@email.com");
     Assertions.assertEquals(userResponse.getFirstName(), "Test");
@@ -86,14 +87,14 @@ public class UserServiceTests {
     return userRepresentation;
   }
 
-  private User generateUser() {
-    User user = new User();
+  private UserRequest generateUserRequest() {
+    UserRequest userRequest = new UserRequest();
 
-    user.setEmail("test@email.com");
-    user.setFirstName("Test");
-    user.setLastName("Testing");
-    user.setUsername("Test");
+    userRequest.setEmail("test@email.com");
+    userRequest.setFirstName("Test");
+    userRequest.setLastName("Testing");
+    userRequest.setUsername("Test");
 
-    return user;
+    return userRequest;
   }
 }

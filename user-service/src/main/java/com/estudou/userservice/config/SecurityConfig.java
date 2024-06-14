@@ -38,11 +38,11 @@ public class SecurityConfig {
    */
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    PreAuthenticatedUserRoleHeaderFilter preAuthenticatedUserFilter = new PreAuthenticatedUserRoleHeaderFilter();
+    PreAuthenticatedUserRoleHeaderFilter authFilter = new PreAuthenticatedUserRoleHeaderFilter();
 
     http.csrf(csrf -> csrf.disable());
 
-    return http.addFilterBefore(preAuthenticatedUserFilter, BasicAuthenticationFilter.class)
+    return http.addFilterBefore(authFilter, BasicAuthenticationFilter.class)
         .authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll()).build();
   }
 }
