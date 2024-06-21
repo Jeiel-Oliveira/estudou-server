@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.RealmResource;
+import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.mockito.InjectMocks;
@@ -68,6 +69,22 @@ public class UserServiceTests {
   @Test
   void shouldCreate() {
     User userResponse = userService.create(generateUserRequest());
+
+    Assertions.assertEquals(userResponse.getEmail(), "test@email.com");
+    Assertions.assertEquals(userResponse.getFirstName(), "Test");
+    Assertions.assertEquals(userResponse.getLastName(), "Testing");
+
+    Assertions.assertInstanceOf(User.class, userResponse);
+  }
+
+  @Test
+  void shouldFindById() {
+    String userId = "dbcf9bce-eb5a-4706-a1cf-a3fafea34901";
+
+    when(keycloak.realm(any()).users().get(userId)).thenReturn(mock(UserResource.class));
+    when(keycloak.realm(any()).users().get(userId).toRepresentation()).thenReturn(generateUserRepresentation());
+
+    User userResponse = userService.findById(userId);
 
     Assertions.assertEquals(userResponse.getEmail(), "test@email.com");
     Assertions.assertEquals(userResponse.getFirstName(), "Test");

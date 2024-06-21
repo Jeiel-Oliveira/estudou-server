@@ -17,6 +17,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.estudou.userservice.model.User;
 import com.estudou.userservice.service.UserService;
@@ -72,6 +73,15 @@ class UserControllerTests {
         .perform(
             post("/api/user").contentType(MediaType.APPLICATION_JSON).content("{}").with(csrf()))
         .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  @WithMockUser(username = "admin", authorities = { "admin" })
+  void shouldFindUserById() throws Exception {
+    when(userService.findById(any())).thenReturn(generateUser());
+
+    mockMvc.perform(get("/api/user/1", 1L)).andExpect(status().isOk())
+        .andExpect(MockMvcResultMatchers.jsonPath("$.data.firstName").value("Test"));
   }
 
   private User generateUser() {

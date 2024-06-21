@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.estudou.userservice.exception.ResponseAdvice;
 import com.estudou.userservice.exception.UserNotFoundException;
 
+import jakarta.ws.rs.NotFoundException;
+
 /**
  * Global exception handler for the application. This class provides centralized
  * exception handling for specific exceptions thrown within the application.
@@ -48,7 +50,7 @@ public class ApplicationExceptionHandler {
    * @param exception The UserNotFoundException instance.
    * @return A ResponseEntity containing error details for user not found.
    */
-  @ExceptionHandler(UserNotFoundException.class)
+  @ExceptionHandler({UserNotFoundException.class, NotFoundException.class})
   public ResponseEntity<ResponseAdvice<Map<String, Object>>> handleBussinessException(
       UserNotFoundException exception) {
     ResponseAdvice<Map<String, Object>> errorAdvice = new ResponseAdvice<Map<String, Object>>(

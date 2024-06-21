@@ -3,6 +3,8 @@ package com.estudou.userservice.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ws.rs.NotFoundException;
+
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
@@ -12,15 +14,18 @@ import org.springframework.stereotype.Service;
 
 import com.estudou.userservice.config.KeycloakSecurityConfig;
 import com.estudou.userservice.dto.UserRequest;
+import com.estudou.userservice.exception.UserNotFoundException;
 import com.estudou.userservice.model.User;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Service class for managing users. This service provides methods to interact
  * with Keycloak and perform operations related to users.
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class UserService {
 
@@ -45,13 +50,44 @@ public class UserService {
   }
 
   /**
+   * Retrieves a user from Keycloak by their unique ID.
+   *
+   * <p>
+   * This method interacts with the Keycloak server to fetch user details based on
+   * the provided user ID.
+   * </p>
+   *
+   * @param userId the unique identifier of the user to be retrieved.
+   * @return the {@link User} object representing the user's details.
+   * @throws UserNotFoundException if no user with the specified {@code userId} is
+   *                               found.
+   * @throws Exception             for any other unexpected errors during the user
+   *                               retrieval process.
+   */
+  public User findById(String userId) {
+    try {
+      Keycloak keycloak = keycloakConfig.getKeycloakInstance();
+      UserRepresentation userRepresentation = keycloak.realm(realmName).users().get(userId)
+          .toRepresentation();
+
+      return mapUser(userRepresentation);
+    } catch (NotFoundException notFound) {
+      throw new UserNotFoundException(userId);
+    } catch (Exception exception) {
+      log.error("[UserService] - exception error" + exception.getMessage());
+      throw exception;
+    }
+  }
+
+  /**
    * Creates a new user in the Keycloak realm.
    *
    * <p>
    * This method maps the provided {@code User} object to a
    * {@code UserRepresentation} object and then uses the Keycloak API to create
    * the user in the specified realm. After the user is created, it maps the
-   * {@code UserRepresentation} back to a {@code User} object and returns it.</p>
+   * {@code UserRepresentation} back to a {@code User} object and returns it.
+   * </p>
    *
    * @param user the {@code User} object containing the details of the user to be
    *             created. This parameter must not be {@code null}.
@@ -71,6 +107,7 @@ public class UserService {
   private User mapUser(UserRepresentation userRepresentation) {
     User user = new User();
 
+    user.setId(userRepresentation.getId());
     user.setEmail(userRepresentation.getEmail());
     user.setFirstName(userRepresentation.getFirstName());
     user.setLastName(userRepresentation.getLastName());

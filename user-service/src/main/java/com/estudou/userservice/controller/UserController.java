@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.estudou.userservice.config.Authority;
 import com.estudou.userservice.dto.UserRequest;
 import com.estudou.userservice.exception.ResponseAdvice;
+import com.estudou.userservice.exception.UserNotFoundException;
 import com.estudou.userservice.model.User;
 import com.estudou.userservice.service.UserService;
 
@@ -45,8 +47,8 @@ public class UserController {
    *         list of users
    */
   @GetMapping
-  @PreAuthorize(Authority.ADMIN)
   @ResponseStatus(HttpStatus.OK)
+  @PreAuthorize(Authority.ADMIN)
   public ResponseAdvice<List<User>> findAll() {
     List<User> users = userService.findAll();
 
@@ -70,6 +72,26 @@ public class UserController {
 
     ResponseAdvice<User> responseAdvice = new ResponseAdvice<User>(HttpStatus.CREATED,
         "Users found successfully.", user);
+
+    return responseAdvice;
+  }
+
+  /**
+   * Retrieves a user by their ID and returns a standardized response.
+   *
+   * @param userId the unique identifier of the user, extracted from the URL.
+   * @return a {@link ResponseAdvice} object containing the user details, an OK
+   *         status, and a success message.
+   * @throws UserNotFoundException if the user with the specified {@code userId}
+   */
+  @GetMapping("/{userId}")
+  @ResponseStatus(HttpStatus.OK)
+  public ResponseAdvice<User> findById(@PathVariable(value = "userId") String userId) {
+
+    User user = userService.findById(userId);
+
+    ResponseAdvice<User> responseAdvice = new ResponseAdvice<User>(HttpStatus.OK,
+        "User found successfully.", user);
 
     return responseAdvice;
   }
