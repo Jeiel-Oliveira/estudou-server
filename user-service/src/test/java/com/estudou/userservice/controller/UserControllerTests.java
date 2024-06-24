@@ -3,6 +3,7 @@ package com.estudou.userservice.controller;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -82,6 +83,13 @@ class UserControllerTests {
 
     mockMvc.perform(get("/api/user/1", 1L)).andExpect(status().isOk())
         .andExpect(MockMvcResultMatchers.jsonPath("$.data.firstName").value("Test"));
+  }
+
+  @Test
+  @WithMockUser(username = "admin", authorities = { "admin" })
+  void shouldDeleteById() throws Exception {
+    when(userService.delete(any())).thenReturn(true);
+    mockMvc.perform(delete("/api/user/1").with(csrf())).andExpect(status().isOk());
   }
 
   private User generateUser() {

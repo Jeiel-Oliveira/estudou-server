@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -92,6 +93,26 @@ public class UserController {
 
     ResponseAdvice<User> responseAdvice = new ResponseAdvice<User>(HttpStatus.OK,
         "User found successfully.", user);
+
+    return responseAdvice;
+  }
+
+  /**
+   * Deletes a user identified by the given userId from the system.
+   *
+   * @param userId the unique identifier of the user, extracted from the URL.
+   * @return a {@link ResponseAdvice} object containing the user details, an OK
+   *         status, and a success message.
+   * @throws UserNotFoundException if the user with the specified {@code userId}
+   */
+  @DeleteMapping("/{userId}")
+  @ResponseStatus(HttpStatus.OK)
+  public ResponseAdvice<Boolean> delete(@PathVariable(value = "userId") String userId) {
+
+    Boolean hasDeleted = userService.delete(userId);
+
+    ResponseAdvice<Boolean> responseAdvice = new ResponseAdvice<Boolean>(HttpStatus.OK,
+        "User deleted with the id " + userId, hasDeleted);
 
     return responseAdvice;
   }

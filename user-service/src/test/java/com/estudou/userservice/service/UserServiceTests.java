@@ -7,6 +7,8 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.ws.rs.core.Response;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -75,6 +77,39 @@ public class UserServiceTests {
     Assertions.assertEquals(userResponse.getLastName(), "Testing");
 
     Assertions.assertInstanceOf(User.class, userResponse);
+  }
+
+  @Test
+  void shouldDelete() {
+    String userId = "dbcf9bce-eb5a-4706-a1cf-a3fafea34901";
+
+    when(keycloak.realm(any()).users().get(userId)).thenReturn(mock(UserResource.class));
+    when(keycloak.realm(any()).users().get(userId).toRepresentation()).thenReturn(generateUserRepresentation());
+
+    Response mockResponse = mock(Response.class);
+    when(mockResponse.getStatus()).thenReturn(204);
+
+    when(keycloak.realm(any()).users().delete(any())).thenReturn(mockResponse);
+    Boolean hasDeleted = userService.delete(userId);
+
+    Assertions.assertEquals(hasDeleted, true);
+  }
+
+  @Test
+  void shouldReturnFalseDeleteUnexistUser() {
+    String userId = "james";
+
+    when(keycloak.realm(any()).users().get(userId)).thenReturn(mock(UserResource.class));
+    when(keycloak.realm(any()).users().get(userId).toRepresentation()).thenReturn(generateUserRepresentation());
+
+    Response mockResponse = mock(Response.class);
+    when(mockResponse.getStatus()).thenReturn(404);
+
+    when(keycloak.realm(any()).users().delete(any())).thenReturn(mockResponse);
+
+    Boolean hasDeleted = userService.delete(userId);
+
+    Assertions.assertEquals(hasDeleted, false);
   }
 
   @Test

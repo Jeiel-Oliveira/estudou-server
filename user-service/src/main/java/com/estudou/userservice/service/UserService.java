@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.core.Response;
 
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.representations.idm.CredentialRepresentation;
@@ -102,6 +103,33 @@ public class UserService {
     keycloak.realm(realmName).users().create(userRepresentation);
 
     return mapUser(userRepresentation);
+  }
+
+  /**
+   * Deletes a user identified by the given userId from the Keycloak realm.
+   * <p>
+   * This method interacts with the Keycloak instance configured in the system to
+   * delete a user from the specified realm. It uses the provided user ID to
+   * locate and delete the user. The operation is considered successful if the
+   * response status code from Keycloak indicates a success (HTTP 2xx status
+   * code).
+   * </p>
+   *
+   * @param userId the unique identifier of the user to be deleted. This should be
+   *               a non-null and non-empty string representing a valid user ID in
+   *               the Keycloak realm.
+   * @return {@code true} if the user is successfully deleted (status code in the
+   *         range 200-299); {@code false} otherwise.
+   */
+  public Boolean delete(String userId) {
+    Keycloak keycloak = keycloakConfig.getKeycloakInstance();
+
+    findById(userId);
+
+    Response deleteResponse = keycloak.realm(realmName).users().delete(userId);
+    int statusCode = deleteResponse.getStatus();
+
+    return (statusCode >= 200 && statusCode < 300);
   }
 
   private User mapUser(UserRepresentation userRepresentation) {
