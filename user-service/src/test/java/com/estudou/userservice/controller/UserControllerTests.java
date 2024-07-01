@@ -6,6 +6,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Arrays;
@@ -20,6 +21,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import com.estudou.userservice.dto.UserRequest;
 import com.estudou.userservice.model.User;
 import com.estudou.userservice.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -69,6 +71,18 @@ class UserControllerTests {
 
   @Test
   @WithMockUser(username = "admin", authorities = { "admin" })
+  void shouldUpdate() throws Exception {
+    UserRequest userRequest = generateUserRequest();
+    String userRequestString = objectMapper.writeValueAsString(userRequest);
+
+    mockMvc
+        .perform(put("/api/user/1").header("Authorization", "Bearer tokenizou")
+            .contentType(MediaType.APPLICATION_JSON).content(userRequestString).with(csrf()))
+        .andExpect(status().isOk());
+  }
+
+  @Test
+  @WithMockUser(username = "admin", authorities = { "admin" })
   void shouldReturnInvalidFields() throws Exception {
     mockMvc
         .perform(
@@ -102,5 +116,17 @@ class UserControllerTests {
     user.setPassword("password123");
 
     return user;
+  }
+
+  private UserRequest generateUserRequest() {
+    UserRequest userRequest = new UserRequest();
+
+    userRequest.setEmail("test@email.com");
+    userRequest.setFirstName("Test");
+    userRequest.setLastName("Testing");
+    userRequest.setUsername("test");
+    userRequest.setPassword("password123");
+
+    return userRequest;
   }
 }

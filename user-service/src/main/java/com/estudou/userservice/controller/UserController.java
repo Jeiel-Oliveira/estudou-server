@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -73,6 +74,25 @@ public class UserController {
 
     ResponseAdvice<User> responseAdvice = new ResponseAdvice<User>(HttpStatus.CREATED,
         "Users found successfully.", user);
+
+    return responseAdvice;
+  }
+
+  /**
+ * Updates the user information for a given user ID with the details provided in the {@link UserRequest}.
+ *
+ * @param userId the ID of the user to update, extracted from the URL path. This must not be {@code null} or empty.
+ * @param userRequest the {@link UserRequest} object containing the new user details. This must be a valid, non-null request body.
+ * @return a {@link ResponseAdvice} object containing the HTTP status, a success message, and the updated {@link User} object.
+ */
+  @PutMapping("/{userId}")
+  @ResponseStatus(HttpStatus.OK)
+  @PreAuthorize(Authority.ADMIN)
+  public ResponseAdvice<User> update(@PathVariable(value = "userId") String userId, @Valid @RequestBody UserRequest userRequest) {
+    User user = userService.update(userId, userRequest);
+
+    ResponseAdvice<User> responseAdvice = new ResponseAdvice<User>(HttpStatus.OK,
+        "User update successfully.", user);
 
     return responseAdvice;
   }

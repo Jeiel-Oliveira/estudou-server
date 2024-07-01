@@ -96,6 +96,18 @@ public class UserServiceTests {
   }
 
   @Test
+  void shouldUpdate() {
+    String userId = "dbcf9bce-eb5a-4706-a1cf-a3fafea34901";
+
+    when(keycloak.realm(any()).users().get(userId)).thenReturn(mock(UserResource.class));
+    when(keycloak.realm(any()).users().get(userId).toRepresentation()).thenReturn(generateUserRepresentation());
+
+    User user = userService.update(userId, generateUserRequest());
+
+    Assertions.assertEquals(user.getEmail(), "test@email.com");
+  }
+
+  @Test
   void shouldReturnFalseDeleteUnexistUser() {
     String userId = "james";
 

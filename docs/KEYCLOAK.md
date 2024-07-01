@@ -76,7 +76,7 @@ http://keycloak:8080/realms/estudou-realm/protocol/openid-connect/logout
 The way to handle user roles
 
 - Go to Keycloak platform
-- Go to Clients -> Choose your client -> client scopes -> choose correct scope -> add a mapper -> By configuration -> User realm role
+- Go to Clients -> Choose your client -> client scopes -> choose correct scope -> add a mapper -> By configuration -> User realm role -> token claim name = roles (See PreAuthenticationdUserRoleHeaderFilter.java)
 
 To configure a user as admin of the system
 - Go to Users -> Select the user -> Role mapping -> Assign roles -> Filter by clients -> Select the realm admin

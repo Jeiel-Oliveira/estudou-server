@@ -132,6 +132,24 @@ public class UserService {
     return (statusCode >= 200 && statusCode < 300);
   }
 
+  /**
+ * Updates the user information for a given user ID with the details provided in the {@link UserRequest}.
+ *
+ * @param userId the ID of the user to update. This should not be {@code null} or empty.
+ * @param userRequest the {@link UserRequest} containing the new user details. This should not be {@code null}.
+ * @return the updated {@link User} object.
+ */
+  public User update(String userId, UserRequest userRequest) {
+    findById(userId);
+
+    UserRepresentation userRepresentation = mapToUpdateUserRepresentation(userId, userRequest);
+
+    Keycloak keycloak = keycloakConfig.getKeycloakInstance();
+    keycloak.realm(realmName).users().get(userId).update(userRepresentation);
+
+    return mapUser(userRepresentation);
+  }
+
   private User mapUser(UserRepresentation userRepresentation) {
     User user = new User();
 
@@ -165,4 +183,14 @@ public class UserService {
     return userRepresentation;
   }
 
+  private UserRepresentation mapToUpdateUserRepresentation(String userId, UserRequest user) {
+    UserRepresentation userRepresentation = new UserRepresentation();
+
+    userRepresentation.setId(userId);
+    userRepresentation.setUsername(user.getUsername());
+    userRepresentation.setFirstName(user.getFirstName());
+    userRepresentation.setLastName(user.getLastName());
+
+    return userRepresentation;
+  }
 }
